@@ -959,12 +959,12 @@ td {
               <label class="upload-box" for="csvInput">
                 <input id="csvInput" type="file" accept=".xlsx,.xls,.csv,text/csv" />
                 <strong>上传 Excel / CSV</strong>
-                <span>按模板替换本地展示数据，浏览器会记住最近一次上传。</span>
+                <span>按模板上传后会与当前数据合并并去重，当前浏览器会记住最近一次维护结果。</span>
               </label>
               <button class="ghost-button" id="resetData" type="button">恢复默认数据</button>
             </div>
             <p class="upload-status" id="uploadStatus"></p>
-            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。</p>
+            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。静态网页上传只影响当前浏览器，如需所有同事看到更新，需要把合并后的数据重新发布到 GitHub。</p>
           </div>
         </details>
 
@@ -1133,6 +1133,33 @@ function cleanRows(rows) {
     .filter((row) => REQUIRED_COLUMNS.some((column) => row[column]))
     .filter((row) => row["课程名称"] && row["课程链接"])
     .map((row, index) => ({ ...row, id: `course-${index}` }));
+}
+
+function courseIdentity(item) {
+  const link = String(item["课程链接"] || "").trim().toLowerCase();
+  if (link) return `link:${link}`;
+  return ["课程名称", "二级部门", "授课日期"]
+    .map((key) => String(item[key] || "").trim().toLowerCase())
+    .join("|");
+}
+
+function stripRuntimeFields(item) {
+  const row = {};
+  [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS].forEach((column) => {
+    row[column] = item[column] instanceof Date ? formatDate(item[column]) : String(item[column] || "").trim();
+  });
+  return row;
+}
+
+function mergeCourseRows(existingRows, incomingRows) {
+  const merged = new Map();
+  cleanRows(existingRows).forEach((item) => {
+    merged.set(courseIdentity(item), stripRuntimeFields(item));
+  });
+  cleanRows(incomingRows).forEach((item) => {
+    merged.set(courseIdentity(item), stripRuntimeFields(item));
+  });
+  return cleanRows([...merged.values()]);
 }
 
 function countBy(items, key) {
@@ -1476,7 +1503,7 @@ async function boot() {
   if (saved?.startsWith("{")) {
     try {
       const payload = JSON.parse(saved);
-      parsedRows = payload.type === "xlsx-json" ? payload.rows : parseCsv(defaultText);
+      parsedRows = Array.isArray(payload.rows) ? payload.rows : parseCsv(defaultText);
     } catch {
       parsedRows = parseCsv(defaultText);
     }
@@ -1504,12 +1531,17 @@ els.csvInput.addEventListener("change", async (event) => {
     if (!rows.length) {
       throw new Error("没有识别到有效课程，请检查课程名称和课程链接是否为空。");
     }
+    const beforeCount = courses.length;
+    const beforeKeys = new Set(courses.map(courseIdentity));
+    const incomingKeys = new Set(rows.map(courseIdentity));
+    const updatedCount = [...incomingKeys].filter((key) => beforeKeys.has(key)).length;
+    courses = mergeCourseRows(courses, parsed);
+    const addedCount = Math.max(0, courses.length - beforeCount);
     selectedCourseIds = new Set();
-    courses = rows;
-    localStorage.setItem(STORAGE_KEY, isExcel ? JSON.stringify({ type: "xlsx-json", rows: parsed }) : text);
-    localStorage.setItem(STORAGE_NAME_KEY, file.name);
-    renderAll(file.name);
-    setUploadStatus(`导入成功：${file.name}，已更新 ${rows.length} 门课程。`);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ type: "merged-json", rows: courses.map(stripRuntimeFields) }));
+    localStorage.setItem(STORAGE_NAME_KEY, `已合并：${file.name}`);
+    renderAll(`已合并：${file.name}`);
+    setUploadStatus(`导入成功：${file.name}。新增 ${addedCount} 门，更新 ${updatedCount} 门，当前共 ${courses.length} 门；贡献榜已刷新。`);
   } catch (error) {
     console.error(error);
     setUploadStatus(error.message || "导入失败，请检查文件格式。", "error");
