@@ -964,7 +964,7 @@ td {
               <button class="ghost-button" id="resetData" type="button">恢复默认数据</button>
             </div>
             <p class="upload-status" id="uploadStatus"></p>
-            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。静态网页上传只影响当前浏览器，如需所有同事看到更新，需要把合并后的数据重新发布到 GitHub。</p>
+            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。上传后将自动同步到云端，所有访问者均可看到最新数据。如云端同步失败，数据会暂存本地浏览器。</p>
           </div>
         </details>
 
@@ -998,7 +998,12 @@ td {
       </main>
     </div>
     <script>
-const EMBEDDED_CSV = "﻿课程名称,课程类型,课程介绍,课程链接,二级部门,课程属性,授课日期\r\n异常SN号平板追回,运营类,讲解异常SN号平板的识别方法、追回流程、注意事项及相关操作规范，帮助相关人员高效完成异常SN号平板的追回工作。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn9w6vcdlzo4srhlw1a91t,爱学产品线,,2026-03-06\r\n首续交接及退费规则同步,运营类,同步首单与续单的交接流程、责任划分，以及退费的申请条件、办理流程、金额核算等相关规则，确保相关人员准确掌握。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnll78544x2j2gq581mbh1?from=from_copylink,爱学产品线,,2026-03-23\r\n小灶课技巧—高粘性短时高效辅导,教学类,分享小灶课的授课技巧，重点讲解如何通过短时辅导提升学生粘性，实现高效教学，助力提升小灶课辅导质量。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnivnjuedzzai97pih1gcr,爱学产品线,,2026-03-19\r\n讲题与板书技巧-理科,教学类,针对理科科目，讲解讲题的思路、方法及技巧，同时传授理科板书的设计、书写要点，提升理科讲题与板书能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcniwgo6e6bv7gaw4gwzdxv,爱学产品线,,2026-03-19\r\n讲题与板书技巧-文科,教学类,针对文科科目，讲解讲题的思路、方法及技巧，同时传授文科板书的设计、书写要点，提升文科讲题与板书能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcniv3ptbt5939yh4e34v3s,爱学产品线,,2026-03-19\r\n讲题与板书技巧-文科,教学类,针对文科科目，讲解讲题的思路、方法及技巧，同时传授文科板书的设计、书写要点，提升文科讲题与板书能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcniv3ptbt5939yh4e34v3s,爱学产品线,,2026-03-19\r\n团队管理者应有的职业观分享,领导力类,分享团队管理者应具备的职业素养、职业认知与职业理念，助力管理者树立正确职业观，提升管理能力。, https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn9bfiqm6457b535hmn769?from=from_copylink,爱学产品线,,2026-03-05\r\n作战地图目标制定与线下协同沟通,领导力类,讲解作战地图目标的制定方法、拆解逻辑，以及线下团队协同沟通的技巧、流程，提升团队目标达成率与协同效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnb2u8t92wqwom5cja12z2?from=from_copylink,爱学产品线,,2026-03-09\r\n慧学产品优势介绍,产品类,详细介绍慧学产品的核心功能、差异化优势、适用场景及价值，帮助相关人员全面掌握产品亮点。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhc7zupga3v3nxre4s174?from=from_copylink,爱学产品线,,2026-03-17\r\n服务期如何有效促活、挖需经验分享,运营类,分享服务期内学员促活的方法、用户需求挖掘的技巧与实战经验，助力提升服务质量与用户价值。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhd754c4lae5t7sj7m6tm?from=from_copylink,爱学产品线,,2026-03-17\r\n如何帮助学员提升学习率,运营类,讲解帮助学员提升学习率的思路、方法与技巧，包括学习习惯引导、学习动力激发等，助力学员高效学习。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhete24dc77k6yf257oe3?from=from_copylink,爱学产品线,,2026-03-17\r\n助教的日常服务介绍,运营类,介绍助教日常服务的具体内容、工作流程、服务标准及注意事项，明确助教日常服务的核心要求。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhh568w97q2thtyms6882?from=from_copylink,爱学产品线,,2026-03-17\r\n如何利用好考试,运营类,讲解考试的利用方法，包括考前复习引导、考后分析总结、以考促学的技巧，充分发挥考试的诊断与提升作用。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhhlb6mgfh95w7ctwo643?from=from_copylink,爱学产品线,,2026-03-17\r\n慧学初中课程设计逻辑,教学类,讲解课程设计的核心逻辑，重点分享如何结合本地学情、地域特点，实现课程内容的本地化适配与优化。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhi97h1xh2815swy7n98i?from=from_copylink,爱学产品线,,2026-03-17\r\n教育政策解读,教育素养类,对当前相关教育政策进行详细解读，明确政策核心内容、实施要求及影响，帮助相关人员准确理解并落实政策。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhig8bsh8syo1t37d85hq?from=from_copylink,爱学产品线,,2026-03-17\r\n如何留住慧学产品用户,运营类,分享慧学产品留住用户的策略、方法与技巧，包括用户服务优化、需求满足、粘性提升等相关内容。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhjwf81k7356s1tu47xv7?from=from_copylink,爱学产品线,,2026-03-17\r\n慧学春期中运营策略,运营类,讲解慧学产品春期中阶段的运营核心目标、具体策略、执行流程及注意事项，助力达成期中运营目标。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh1w9337w528q78k5egt9?from=from_copylink,爱学产品线,,2026-03-18\r\n《慧学产品售卖活动+私聊回访技巧分享》,运营类,分享慧学产品售卖活动的策划、执行技巧，以及私聊、电访的沟通方法与实战经验，提升售卖转化效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh225a99gvq3l1wcjo75q?from=from_copylink,爱学产品线,,2026-03-18\r\n慧学产品服务及售卖经验之谈分享,运营类,结合实战经验，分享慧学产品的服务技巧与售卖心得，助力相关人员提升服务与售卖能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh28u4323w2wezx719v2s?from=from_copylink,爱学产品线,,2026-03-18\r\n如何打好一通有效的电话回访,运营类,讲解有效电话回访的流程、沟通技巧、问题应对方法及注意事项，帮助相关人员提升电话回访质量与效果。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh377k4n971u56dxq1xxl?from=from_copylink,爱学产品线,,2026-03-18\r\n新形态AI提效通识——OpenClaw、CC、Cowork快速入门,AI提效类,讲解新形态AI提效的基础通识知识，重点演示OpenClaw、CC、Cowork三款工具的快速入门方法，帮助学员快速上手使用工具实现提效。,【培训】《新形态AI提效通识——OpenClaw/CC/Cowork快速入门》,大课堂产品线,,2026-02-28\r\nThe 10x You——从“会用工具”到“用AI重构你的工作方式”,AI提效类,引导学员从单纯会用AI工具，向用AI重构工作方式转变，分享高效工作思维与方法，助力学员实现工作效率10倍提升。,【培训】《The 10x You——从“会用工具”到“用AI重构你的工作方式”》,大课堂产品线,,2026-03-10\r\n新形态 AI 提效——集成交付项目实践,AI提效类,结合集成交付项目实战案例，讲解新形态AI提效在项目中的应用方法、执行流程及落地要点，提升学员项目实战能力。,【培训】《新形态 AI 提效——集成交付项目实践》,大课堂产品线,,2026-03-24\r\n新一代民办校学业解决方案宣贯,产品类,宣贯新一代民办校学业解决方案的核心内容、优势特点、适用场景及实施方法，帮助相关人员全面了解并推广该方案。,新一代民办校学业解决方案线上宣贯,交付服务部,精品课程,2026-03-23\r\n当前我国教育政策热点解读分析 ——“AI + 教育” 与 “四个未来”,教育素养类,聚焦当前我国教育政策热点，重点解读“AI+教育”与“四个未来”的核心内涵、实施要求及发展趋势，助力学员精准把握政策导向。,https://www.21tb.cn/IN4NE0ngPHShP,教育技术研究院,精品课程,2026-03-09\r\nSkills与OpenClaw介绍,AI提效类,详细介绍Skills的核心功能、使用场景，以及OpenClaw工具的特点、操作要点，帮助学员全面掌握两者的基础信息与使用方法。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnpteuh2943141foq9j7k9?from=from_copylink,大学情产品线,精品课程,2026-02-06\r\n人人都可创造AI数字人：讲解Claude Code的关键skills,AI提效类,面向所有学员，讲解使用Claude Code创造AI数字人的核心技巧，重点拆解关键skills，让学员快速掌握AI数字人创造方法。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn9z6g42zhhuqj52nx4g65?from=from_copylink,大学情产品线,,2026-03-06\r\n产品经理、项目经理、设计师 AI 提效实战案例分享,AI提效类,分享产品经理、项目经理、设计师三大岗位的AI提效实战案例，拆解AI工具在各岗位的应用技巧，助力相关岗位学员提升工作效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnes678s1m9t8y42by879u?from=from_copylink,大学情产品线,,2026-03-13\r\n招考平台国产化及商密实践,研发技术类,讲解招考平台国产化的实现路径、核心技术，以及商业秘密保护的实践方法、注意事项，保障招考平台安全合规运行。,https://ebg.iflytek.com/article/detail?id=hi7vp3p0mk7wj436lv4egu6a,技术平台部,,2026-03-11\r\n大学情自动化弹性伸缩平台建设实践,研发技术类,分享大学情自动化弹性伸缩平台的建设思路、技术架构、实施流程及实战经验，助力相关人员掌握平台建设核心要点。,【技术之声26年第2期】大学情自动化弹性伸缩平台建设实践 - EAI智教时间 - 教育BG技术门户,技术平台部,,2026-03-25\r\n智能运维Agent—— 自动化运维的新模式,研发技术类,介绍智能运维Agent的核心功能、工作原理，解读其作为自动化运维新模式的优势及应用场景，助力学员了解运维行业新趋势。,https://ebg.iflytek.com/article/detail?id=tn6xt53aqzqze26o0n57njl1,技术平台部,精品课程,2026-03-18\r\n新形态AI工具提效通识培训,AI提效类,开展新形态AI工具提效通识培训，覆盖AI工具的基础认知、应用逻辑及通用提效技巧，帮助学员建立AI提效基础思维。,https://www.21tb.cn/IN4NE0ngFEZ6G,技术平台部,,2026-03-06\r\n新形态AI工具提效进阶培训,AI提效类,在通识培训基础上，开展AI工具提效进阶培训，讲解复杂场景下的工具应用技巧、提效方案设计，提升学员AI提效进阶能力。,https://www.21tb.cn/IN4NE0ngRR0xR,技术平台部,精品课程,2026-03-13\r\n当 PM 遇上 AI Agent：基于真实案例的使用分享,AI提效类,结合真实案例，分享PM（产品经理）使用AI Agent的方法、技巧及应用场景，助力PM利用AI Agent提升工作效率与工作质量。,【远航分享】当 PM 遇上 AI Agent：基于真实案例的使用分享,考试与语言学习产品线,,2026-03-19\r\nCC & AIGC-项目实战,AI提效类,以项目实战为核心，讲解CC工具与AIGC技术在项目中的结合应用方法、执行流程及落地技巧，提升学员项目实战能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhjzf8g827w335431tpkm,体验设计中心,精品课程,2026-03-17\r\nAI重塑高教生态与商业模式,AI提效类,解读AI技术对高等教育生态的重塑作用，分析AI驱动下高教行业的商业模式变革方向、核心逻辑及发展机遇。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnnqbqz4176417979g196r,高教产品线,,2026-03-26\r\nClaude Code 落地实操与黄金要点分享,AI提效类,讲解Claude Code的落地实操步骤、操作技巧，分享其使用过程中的黄金要点与避坑指南，帮助学员高效落地使用Claude Code。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnnqbqz4176417979g196r,高教产品线,,2026-03-26\r\n用CC打造智能体团队,AI提效类,分享利用CC工具打造智能体团队的方法、逻辑及管理技巧，指导学员搭建高效智能体团队，提升团队工作效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnnqbqz4176417979g196r,高教产品线,,2026-03-26\r\n数据驱动，精准提分-重构民办校“管-教-学”育人链路,产品类,讲解以数据驱动为核心的民办校提分策略，分享如何重构“管-教-学”育人链路，实现精准提分，提升民办校教学质量。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn92w4kl85ym15w6gzftgm?from=from_copylink,市场与方案部,,2026-03-06\r\nAI工具提效通识培训,AI提效类,开展AI工具提效通识培训，覆盖AI工具的基础认知、应用逻辑及通用提效技巧，帮助学员建立AI提效基础思维。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnji583ujs1h62byt2x482?from=from_copylink,运作支持部,,2026-03-20\r\n";
+const GITHUB_OWNER = "jinhuang1865";
+const GITHUB_REPO = "hongxiang-plan";
+const GITHUB_TOKEN = "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";
+const CSV_PATH = "courses.csv";
+const CSV_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/${CSV_PATH}`;
+const CSV_API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CSV_PATH}`;
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
 const STORAGE_KEY = "hongxiang-plan-csv";
@@ -1456,7 +1461,9 @@ function escapeAttribute(value) {
 }
 
 async function loadDefaultData() {
-  return EMBEDDED_CSV;
+  const res = await fetch(CSV_RAW_URL, { cache: "no-store" });
+  if (!res.ok) throw new Error("无法加载课程数据");
+  return res.text();
 }
 
 function ensureXlsx() {
@@ -1495,23 +1502,58 @@ function decodeCsvBuffer(buffer) {
   return new TextDecoder().decode(buffer);
 }
 
-async function boot() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  const savedName = localStorage.getItem(STORAGE_NAME_KEY);
-  const defaultText = saved || (await loadDefaultData());
-  let parsedRows;
-  if (saved?.startsWith("{")) {
-    try {
-      const payload = JSON.parse(saved);
-      parsedRows = Array.isArray(payload.rows) ? payload.rows : parseCsv(defaultText);
-    } catch {
-      parsedRows = parseCsv(defaultText);
-    }
-  } else {
-    parsedRows = parseCsv(defaultText);
+async function pushToGitHub(csvContent) {
+  // Get current file SHA
+  const getRes = await fetch(CSV_API_URL, {
+    headers: { Authorization: `token ${GITHUB_TOKEN}` },
+  });
+  if (!getRes.ok) throw new Error("获取文件信息失败");
+  const fileInfo = await getRes.json();
+  const sha = fileInfo.sha;
+  // Encode and push
+  const encoder = new TextEncoder();
+  const binary = encoder.encode(csvContent);
+  const base64 = btoa(String.fromCharCode(...binary));
+  const putRes = await fetch(CSV_API_URL, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: "Update courses via web upload",
+      content: base64,
+      sha: sha,
+    }),
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API 返回 ${putRes.status}`);
   }
+  return putRes.json();
+}
+
+async function boot() {
+  let defaultText;
+  let sourceName = "云端数据";
+  // Try GitHub first
+  try {
+    defaultText = await loadDefaultData();
+  } catch {
+    // Fallback to localStorage
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      defaultText = saved;
+      sourceName = "本地缓存";
+    } else {
+      els.emptyState.textContent = "数据加载失败，请检查网络连接。";
+      els.emptyState.classList.add("visible");
+      return;
+    }
+  }
+  const parsedRows = parseCsv(defaultText);
   courses = cleanRows(parsedRows);
-  renderAll(saved ? savedName || "已上传数据" : "默认数据");
+  renderAll(sourceName);
 }
 
 els.csvInput.addEventListener("change", async (event) => {
@@ -1538,10 +1580,23 @@ els.csvInput.addEventListener("change", async (event) => {
     courses = mergeCourseRows(courses, parsed);
     const addedCount = Math.max(0, courses.length - beforeCount);
     selectedCourseIds = new Set();
+    // Save to localStorage as backup
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ type: "merged-json", rows: courses.map(stripRuntimeFields) }));
     localStorage.setItem(STORAGE_NAME_KEY, `已合并：${file.name}`);
     renderAll(`已合并：${file.name}`);
-    setUploadStatus(`导入成功：${file.name}。新增 ${addedCount} 门，更新 ${updatedCount} 门，当前共 ${courses.length} 门；贡献榜已刷新。`);
+    setUploadStatus(`正在发布到云端...`);
+    // Push to GitHub
+    try {
+      const headerLine = "\uFEFF\u8BFE\u7A0B\u540D\u79F0,\u8BFE\u7A0B\u7C7B\u578B,\u8BFE\u7A0B\u4ECB\u7ECD,\u8BFE\u7A0B\u94FE\u63A5,\u4E8C\u7EA7\u90E8\u95E8,\u8BFE\u7A0B\u5C5E\u6027,\u6388\u8BFE\u65E5\u671F";
+      const csvContent = headerLine + "\n" + courses.map(stripRuntimeFields).map(r =>
+        REQUIRED_COLUMNS.concat(OPTIONAL_COLUMNS).map(k => `"${String(r[k]||"").replace(/"/g, '""')}"`).join(",")
+      ).join("\n");
+      await pushToGitHub(csvContent);
+      setUploadStatus(`发布成功！导入 ${file.name}：新增 ${addedCount} 门，更新 ${updatedCount} 门，当前共 ${courses.length} 门。所有访问者可见最新数据。`);
+    } catch (pushErr) {
+      console.error(pushErr);
+      setUploadStatus(`本地已更新（新增 ${addedCount} 门，更新 ${updatedCount} 门），但云端发布失败：${pushErr.message}。数据已暂存本地，刷新页面后仍可见。`, "error");
+    }
   } catch (error) {
     console.error(error);
     setUploadStatus(error.message || "导入失败，请检查文件格式。", "error");
@@ -1554,9 +1609,13 @@ els.resetData.addEventListener("click", async () => {
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(STORAGE_NAME_KEY);
   selectedCourseIds = new Set();
-  courses = cleanRows(parseCsv(await loadDefaultData()));
-  renderAll("默认数据");
-  setUploadStatus(`已恢复默认数据，共 ${courses.length} 门课程。`);
+  try {
+    courses = cleanRows(parseCsv(await loadDefaultData()));
+    renderAll("云端数据");
+    setUploadStatus(`已恢复云端最新数据，共 ${courses.length} 门课程。`);
+  } catch {
+    setUploadStatus("恢复失败，请检查网络连接。", "error");
+  }
 });
 
 els.unlockUpload.addEventListener("click", unlockMaintenance);
