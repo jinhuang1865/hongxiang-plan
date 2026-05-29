@@ -964,7 +964,7 @@ td {
               <button class="ghost-button" id="resetData" type="button">恢复默认数据</button>
             </div>
             <p class="upload-status" id="uploadStatus"></p>
-            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。上传后将自动同步到云端，所有访问者均可看到最新数据。如云端同步失败，数据会暂存本地浏览器。</p>
+            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。上传后暂存本地浏览器，如需更新云端数据请联系管理员。</p>
           </div>
         </details>
 
@@ -998,12 +998,7 @@ td {
       </main>
     </div>
     <script>
-const GITHUB_OWNER = "jinhuang1865";
-const GITHUB_REPO = "hongxiang-plan";
-const GITHUB_TOKEN = "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";
-const CSV_PATH = "courses.csv";
-const CSV_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/${CSV_PATH}`;
-const CSV_API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CSV_PATH}`;
+const CSV_RAW_URL = "https://raw.githubusercontent.com/jinhuang1865/hongxiang-plan/main/courses.csv";
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
 const STORAGE_KEY = "hongxiang-plan-csv";
@@ -1502,40 +1497,9 @@ function decodeCsvBuffer(buffer) {
   return new TextDecoder().decode(buffer);
 }
 
-async function pushToGitHub(csvContent) {
-  // Get current file SHA
-  const getRes = await fetch(CSV_API_URL, {
-    headers: { Authorization: `token ${GITHUB_TOKEN}` },
-  });
-  if (!getRes.ok) throw new Error("获取文件信息失败");
-  const fileInfo = await getRes.json();
-  const sha = fileInfo.sha;
-  // Encode and push
-  const encoder = new TextEncoder();
-  const binary = encoder.encode(csvContent);
-  const base64 = btoa(String.fromCharCode(...binary));
-  const putRes = await fetch(CSV_API_URL, {
-    method: "PUT",
-    headers: {
-      Authorization: `token ${GITHUB_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: "Update courses via web upload",
-      content: base64,
-      sha: sha,
-    }),
-  });
-  if (!putRes.ok) {
-    const err = await putRes.json().catch(() => ({}));
-    throw new Error(err.message || `GitHub API 返回 ${putRes.status}`);
-  }
-  return putRes.json();
-}
-
 async function boot() {
   let defaultText;
-  let sourceName = "云端数据";
+  let sourceName = "默认数据";
   // Try GitHub first
   try {
     defaultText = await loadDefaultData();
@@ -1580,23 +1544,10 @@ els.csvInput.addEventListener("change", async (event) => {
     courses = mergeCourseRows(courses, parsed);
     const addedCount = Math.max(0, courses.length - beforeCount);
     selectedCourseIds = new Set();
-    // Save to localStorage as backup
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ type: "merged-json", rows: courses.map(stripRuntimeFields) }));
     localStorage.setItem(STORAGE_NAME_KEY, `已合并：${file.name}`);
     renderAll(`已合并：${file.name}`);
-    setUploadStatus(`正在发布到云端...`);
-    // Push to GitHub
-    try {
-      const headerLine = "\uFEFF\u8BFE\u7A0B\u540D\u79F0,\u8BFE\u7A0B\u7C7B\u578B,\u8BFE\u7A0B\u4ECB\u7ECD,\u8BFE\u7A0B\u94FE\u63A5,\u4E8C\u7EA7\u90E8\u95E8,\u8BFE\u7A0B\u5C5E\u6027,\u6388\u8BFE\u65E5\u671F";
-      const csvContent = headerLine + "\n" + courses.map(stripRuntimeFields).map(r =>
-        REQUIRED_COLUMNS.concat(OPTIONAL_COLUMNS).map(k => `"${String(r[k]||"").replace(/"/g, '""')}"`).join(",")
-      ).join("\n");
-      await pushToGitHub(csvContent);
-      setUploadStatus(`发布成功！导入 ${file.name}：新增 ${addedCount} 门，更新 ${updatedCount} 门，当前共 ${courses.length} 门。所有访问者可见最新数据。`);
-    } catch (pushErr) {
-      console.error(pushErr);
-      setUploadStatus(`本地已更新（新增 ${addedCount} 门，更新 ${updatedCount} 门），但云端发布失败：${pushErr.message}。数据已暂存本地，刷新页面后仍可见。`, "error");
-    }
+    setUploadStatus(`导入成功！${file.name}：新增 ${addedCount} 门，更新 ${updatedCount} 门，当前共 ${courses.length} 门。`);
   } catch (error) {
     console.error(error);
     setUploadStatus(error.message || "导入失败，请检查文件格式。", "error");
@@ -1611,8 +1562,8 @@ els.resetData.addEventListener("click", async () => {
   selectedCourseIds = new Set();
   try {
     courses = cleanRows(parseCsv(await loadDefaultData()));
-    renderAll("云端数据");
-    setUploadStatus(`已恢复云端最新数据，共 ${courses.length} 门课程。`);
+    renderAll("默认数据");
+    setUploadStatus(`已恢复默认数据，共 ${courses.length} 门课程。`);
   } catch {
     setUploadStatus("恢复失败，请检查网络连接。", "error");
   }
