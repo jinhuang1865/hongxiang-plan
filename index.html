@@ -1,0 +1,1555 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>鸿享计划</title>
+    <style>
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef3f7;
+  --text: #17202a;
+  --muted: #657386;
+  --line: #dbe2ea;
+  --brand: #1f7a73;
+  --brand-dark: #145650;
+  --accent: #c9822b;
+  --blue: #2f6fbb;
+  --red: #b95045;
+  --shadow: 0 14px 36px rgba(29, 43, 62, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--bg);
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 28px 22px;
+  color: #f7fbfa;
+  background: #173c42;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f5c35a;
+  color: #173c42;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.brand p,
+.hint {
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.nav {
+  display: grid;
+  gap: 8px;
+}
+
+.nav a {
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+}
+
+.nav a.active,
+.nav a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-title span {
+  font-weight: 700;
+}
+
+.section-title small {
+  color: var(--muted);
+}
+
+.upload-box {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.upload-box input {
+  display: none;
+}
+
+.upload-box strong {
+  color: var(--text);
+}
+
+.upload-box span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ghost-button {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  background: #fff;
+}
+
+.main {
+  min-width: 0;
+  padding: 30px clamp(22px, 4vw, 48px) 52px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.hero h2 {
+  max-width: 780px;
+  margin: 0;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.16;
+}
+
+.month-pill {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--brand-dark);
+  background: #e7f4ef;
+  font-weight: 700;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metrics article,
+.chart-block,
+.action-section,
+.thanks-section,
+.resource-section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.metrics article {
+  padding: 16px;
+}
+
+.metrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.metrics strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--brand-dark);
+  font-size: 34px;
+  line-height: 1;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.chart-block {
+  padding: 18px;
+}
+
+.bar-chart {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(88px, 130px) 1fr 38px;
+  align-items: center;
+  gap: 10px;
+  min-height: 30px;
+  font-size: 13px;
+}
+
+.bar-label {
+  overflow: hidden;
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand);
+}
+
+.bar-row:nth-child(2n) .bar-fill {
+  background: var(--blue);
+}
+
+.bar-value {
+  color: var(--muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.action-section {
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr minmax(260px, 0.8fr);
+  gap: 14px;
+  padding: 0 20px 20px;
+}
+
+.action-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.mini-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mini-item {
+  display: grid;
+  gap: 5px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.mini-item:last-child {
+  border-bottom: 0;
+}
+
+.mini-title {
+  overflow: hidden;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.featured-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #7b4b00;
+  background: #fff0c7;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.share-builder {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.share-builder button,
+.copy-course {
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--brand);
+  font-weight: 700;
+}
+
+.share-builder button {
+  min-height: 40px;
+}
+
+.builder-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.selected-preview {
+  min-height: 92px;
+  max-height: 160px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  background: #f8fafc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.selected-preview ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.plain-button {
+  color: var(--text) !important;
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+}
+
+.copy-status {
+  min-height: 18px;
+  margin: -4px 0 0;
+  color: var(--brand-dark);
+  font-size: 13px;
+}
+
+.thanks-section {
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.thanks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 0 20px 20px;
+}
+
+.thanks-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 72%);
+}
+
+.thanks-copy {
+  margin: 10px 0 16px;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.ranking-list {
+  display: grid;
+  gap: 10px;
+}
+
+.ranking-item {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #eadfc8;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ranking-item:first-child {
+  border-color: #e7c671;
+  background: #fff8e1;
+}
+
+.rank-num {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.rank-main {
+  min-width: 0;
+}
+
+.rank-name {
+  overflow: hidden;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rank-note {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.rank-count {
+  color: var(--brand-dark);
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.resource-section {
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.maintenance-panel {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: var(--shadow);
+}
+
+.maintenance-panel summary {
+  min-height: 44px;
+  padding: 12px 18px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.maintenance-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 18px 18px;
+}
+
+.password-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) 110px;
+  gap: 8px;
+}
+
+.password-row input {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+}
+
+.password-row button {
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--brand);
+  font-weight: 700;
+}
+
+.password-error {
+  min-height: 18px;
+  margin: -6px 0 0;
+  color: var(--red);
+  font-size: 13px;
+}
+
+.upload-actions {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 140px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.upload-actions.locked {
+  display: none;
+}
+
+.maintenance-body .hint {
+  color: var(--muted);
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 20px 14px;
+}
+
+.section-head h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.result-count {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(120px, 0.75fr));
+  gap: 10px;
+  padding: 0 20px 18px;
+}
+
+.toolbar label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.toolbar input,
+.toolbar select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  color: var(--text);
+  background: #fff;
+}
+
+.resource-table-wrap {
+  overflow-x: auto;
+  border-top: 1px solid var(--line);
+}
+
+table {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--muted);
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+td {
+  font-size: 14px;
+}
+
+.select-cell {
+  width: 54px;
+}
+
+.select-course {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+}
+
+.course-title {
+  margin: 0 0 6px;
+  font-weight: 800;
+}
+
+.course-title a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.course-title a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.course-desc {
+  max-width: 520px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--brand-dark);
+  background: #e5f2ee;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.open-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--brand);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.copy-course {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.empty {
+  display: none;
+  padding: 28px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty.visible {
+  display: block;
+}
+
+@media (max-width: 1040px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .metrics,
+  .dashboard,
+  .thanks-grid,
+  .action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolbar .search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .main {
+    padding: 20px 14px 36px;
+  }
+
+  .hero,
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metrics,
+  .dashboard,
+  .action-grid,
+  .thanks-grid,
+  .upload-actions,
+  .password-row,
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">鸿</div>
+          <div>
+            <h1>鸿享计划</h1>
+            <p>鸿享知识库</p>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="页面导航">
+          <a href="#overview" class="active">总览</a>
+          <a href="#resources">课程资源</a>
+          <a href="#thanks">感谢致敬</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="hero" id="overview">
+          <div>
+            <p class="eyebrow">HRBP Resource Dashboard</p>
+            <h2>把各部门课程材料，沉淀成可检索、可追踪、可复用的资源地图。</h2>
+          </div>
+          <div class="month-pill" id="latestMonth">--</div>
+        </header>
+
+        <section class="metrics" aria-label="核心指标">
+          <article>
+            <span>有效课程</span>
+            <strong id="totalCourses">0</strong>
+          </article>
+          <article>
+            <span>覆盖部门</span>
+            <strong id="totalDepartments">0</strong>
+          </article>
+          <article>
+            <span>课程类型</span>
+            <strong id="totalTypes">0</strong>
+          </article>
+          <article>
+            <span>本月新增</span>
+            <strong id="monthCourses">0</strong>
+          </article>
+        </section>
+
+        <section class="dashboard">
+          <div class="chart-block">
+            <div class="section-title">
+              <span>类型分布</span>
+              <small>课程内容结构</small>
+            </div>
+            <div id="typeChart" class="bar-chart"></div>
+          </div>
+          <div class="chart-block">
+            <div class="section-title">
+              <span>部门贡献</span>
+              <small>二级部门沉淀量</small>
+            </div>
+            <div id="deptChart" class="bar-chart compact"></div>
+          </div>
+        </section>
+
+        <section class="action-section" id="actions">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">HRBP Toolkit</p>
+              <h3>本月行动台</h3>
+            </div>
+            <div class="result-count" id="actionMonth">--</div>
+          </div>
+          <div class="action-grid">
+            <article class="action-card">
+              <div class="section-title">
+                <span>本月新增</span>
+                <small id="newCourseCount">0 门</small>
+              </div>
+              <div class="mini-list" id="newCourseList"></div>
+            </article>
+            <article class="action-card">
+              <div class="section-title">
+                <span>重点推荐</span>
+                <small>精品课程优先</small>
+              </div>
+              <div class="mini-list" id="recommendList"></div>
+            </article>
+            <article class="action-card share-builder">
+              <div class="section-title">
+                <span>已选学习清单</span>
+                <small id="selectedCount">已选 0 门</small>
+              </div>
+              <p class="builder-hint">在课程资源里勾选课程后，可生成一段适合I讯飞群转发的学习推荐。</p>
+              <div class="selected-preview" id="selectedPreview">还没有选择课程。</div>
+              <button id="copyShareList" type="button">复制转发清单</button>
+              <button class="plain-button" id="clearSelected" type="button">清空已选</button>
+              <p class="copy-status" id="shareCopyStatus"></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="resource-section" id="resources">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Course Finder</p>
+              <h3>课程资源</h3>
+            </div>
+            <div class="result-count" id="resultCount">0 条</div>
+          </div>
+
+          <div class="toolbar">
+            <label class="search">
+              <span>搜索</span>
+              <input id="searchInput" type="search" placeholder="课程名、介绍、部门..." />
+            </label>
+            <label>
+              <span>类型</span>
+              <select id="typeFilter"></select>
+            </label>
+            <label>
+              <span>部门</span>
+              <select id="deptFilter"></select>
+            </label>
+            <label>
+              <span>人群</span>
+              <select id="audienceFilter"></select>
+            </label>
+            <label>
+              <span>月份</span>
+              <select id="monthFilter"></select>
+            </label>
+            <label>
+              <span>排序</span>
+              <select id="sortSelect">
+                <option value="date-desc">最新优先</option>
+                <option value="date-asc">最早优先</option>
+                <option value="name-asc">名称 A-Z</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="resource-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>选择</th>
+                  <th>课程</th>
+                  <th>类型</th>
+                  <th>二级部门</th>
+                  <th>授课日期</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="courseRows"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="emptyState">没有匹配的课程。</div>
+        </section>
+
+        <details class="maintenance-panel" id="update">
+          <summary>数据维护</summary>
+          <div class="maintenance-body">
+            <div class="section-title">
+              <span>月度更新</span>
+              <small id="dataSource">默认数据</small>
+            </div>
+            <div class="password-row" id="passwordPanel">
+              <input id="adminPassword" type="password" inputmode="numeric" placeholder="输入维护密码" />
+              <button id="unlockUpload" type="button">解锁上传</button>
+            </div>
+            <p class="password-error" id="passwordError"></p>
+            <div class="upload-actions locked" id="uploadActions">
+              <label class="upload-box" for="csvInput">
+                <input id="csvInput" type="file" accept=".xlsx,.xls,.csv,text/csv" />
+                <strong>上传 Excel / CSV</strong>
+                <span>按模板替换本地展示数据，浏览器会记住最近一次上传。</span>
+              </label>
+              <button class="ghost-button" id="resetData" type="button">恢复默认数据</button>
+            </div>
+            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。</p>
+          </div>
+        </details>
+
+        <section class="thanks-section" id="thanks">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Recognition</p>
+              <h3>感谢致敬</h3>
+            </div>
+            <div class="result-count" id="thanksPeriod">按贡献课程数统计</div>
+          </div>
+          <div class="thanks-grid">
+            <article class="thanks-card">
+              <div class="section-title">
+                <span>月度贡献榜</span>
+                <small id="monthlyThanksLabel">--</small>
+              </div>
+              <p class="thanks-copy" id="monthlyThanksCopy">感谢各部门持续贡献优质课程资源。</p>
+              <div class="ranking-list" id="monthlyRanking"></div>
+            </article>
+            <article class="thanks-card">
+              <div class="section-title">
+                <span>年度贡献榜</span>
+                <small id="yearlyThanksLabel">--</small>
+              </div>
+              <p class="thanks-copy" id="yearlyThanksCopy">感谢各部门共同建设鸿享知识库。</p>
+              <div class="ranking-list" id="yearlyRanking"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+const EMBEDDED_CSV = "﻿课程名称,课程类型,课程介绍,课程链接,二级部门,课程属性,授课日期\r\n异常SN号平板追回,运营类,讲解异常SN号平板的识别方法、追回流程、注意事项及相关操作规范，帮助相关人员高效完成异常SN号平板的追回工作。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn9w6vcdlzo4srhlw1a91t,爱学产品线,,2026-03-06\r\n首续交接及退费规则同步,运营类,同步首单与续单的交接流程、责任划分，以及退费的申请条件、办理流程、金额核算等相关规则，确保相关人员准确掌握。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnll78544x2j2gq581mbh1?from=from_copylink,爱学产品线,,2026-03-23\r\n小灶课技巧—高粘性短时高效辅导,教学类,分享小灶课的授课技巧，重点讲解如何通过短时辅导提升学生粘性，实现高效教学，助力提升小灶课辅导质量。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnivnjuedzzai97pih1gcr,爱学产品线,,2026-03-19\r\n讲题与板书技巧-理科,教学类,针对理科科目，讲解讲题的思路、方法及技巧，同时传授理科板书的设计、书写要点，提升理科讲题与板书能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcniwgo6e6bv7gaw4gwzdxv,爱学产品线,,2026-03-19\r\n讲题与板书技巧-文科,教学类,针对文科科目，讲解讲题的思路、方法及技巧，同时传授文科板书的设计、书写要点，提升文科讲题与板书能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcniv3ptbt5939yh4e34v3s,爱学产品线,,2026-03-19\r\n讲题与板书技巧-文科,教学类,针对文科科目，讲解讲题的思路、方法及技巧，同时传授文科板书的设计、书写要点，提升文科讲题与板书能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcniv3ptbt5939yh4e34v3s,爱学产品线,,2026-03-19\r\n团队管理者应有的职业观分享,领导力类,分享团队管理者应具备的职业素养、职业认知与职业理念，助力管理者树立正确职业观，提升管理能力。, https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn9bfiqm6457b535hmn769?from=from_copylink,爱学产品线,,2026-03-05\r\n作战地图目标制定与线下协同沟通,领导力类,讲解作战地图目标的制定方法、拆解逻辑，以及线下团队协同沟通的技巧、流程，提升团队目标达成率与协同效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnb2u8t92wqwom5cja12z2?from=from_copylink,爱学产品线,,2026-03-09\r\n慧学产品优势介绍,产品类,详细介绍慧学产品的核心功能、差异化优势、适用场景及价值，帮助相关人员全面掌握产品亮点。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhc7zupga3v3nxre4s174?from=from_copylink,爱学产品线,,2026-03-17\r\n服务期如何有效促活、挖需经验分享,运营类,分享服务期内学员促活的方法、用户需求挖掘的技巧与实战经验，助力提升服务质量与用户价值。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhd754c4lae5t7sj7m6tm?from=from_copylink,爱学产品线,,2026-03-17\r\n如何帮助学员提升学习率,运营类,讲解帮助学员提升学习率的思路、方法与技巧，包括学习习惯引导、学习动力激发等，助力学员高效学习。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhete24dc77k6yf257oe3?from=from_copylink,爱学产品线,,2026-03-17\r\n助教的日常服务介绍,运营类,介绍助教日常服务的具体内容、工作流程、服务标准及注意事项，明确助教日常服务的核心要求。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhh568w97q2thtyms6882?from=from_copylink,爱学产品线,,2026-03-17\r\n如何利用好考试,运营类,讲解考试的利用方法，包括考前复习引导、考后分析总结、以考促学的技巧，充分发挥考试的诊断与提升作用。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhhlb6mgfh95w7ctwo643?from=from_copylink,爱学产品线,,2026-03-17\r\n慧学初中课程设计逻辑,教学类,讲解课程设计的核心逻辑，重点分享如何结合本地学情、地域特点，实现课程内容的本地化适配与优化。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhi97h1xh2815swy7n98i?from=from_copylink,爱学产品线,,2026-03-17\r\n教育政策解读,教育素养类,对当前相关教育政策进行详细解读，明确政策核心内容、实施要求及影响，帮助相关人员准确理解并落实政策。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhig8bsh8syo1t37d85hq?from=from_copylink,爱学产品线,,2026-03-17\r\n如何留住慧学产品用户,运营类,分享慧学产品留住用户的策略、方法与技巧，包括用户服务优化、需求满足、粘性提升等相关内容。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhjwf81k7356s1tu47xv7?from=from_copylink,爱学产品线,,2026-03-17\r\n慧学春期中运营策略,运营类,讲解慧学产品春期中阶段的运营核心目标、具体策略、执行流程及注意事项，助力达成期中运营目标。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh1w9337w528q78k5egt9?from=from_copylink,爱学产品线,,2026-03-18\r\n《慧学产品售卖活动+私聊回访技巧分享》,运营类,分享慧学产品售卖活动的策划、执行技巧，以及私聊、电访的沟通方法与实战经验，提升售卖转化效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh225a99gvq3l1wcjo75q?from=from_copylink,爱学产品线,,2026-03-18\r\n慧学产品服务及售卖经验之谈分享,运营类,结合实战经验，分享慧学产品的服务技巧与售卖心得，助力相关人员提升服务与售卖能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh28u4323w2wezx719v2s?from=from_copylink,爱学产品线,,2026-03-18\r\n如何打好一通有效的电话回访,运营类,讲解有效电话回访的流程、沟通技巧、问题应对方法及注意事项，帮助相关人员提升电话回访质量与效果。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnh377k4n971u56dxq1xxl?from=from_copylink,爱学产品线,,2026-03-18\r\n新形态AI提效通识——OpenClaw、CC、Cowork快速入门,AI提效类,讲解新形态AI提效的基础通识知识，重点演示OpenClaw、CC、Cowork三款工具的快速入门方法，帮助学员快速上手使用工具实现提效。,【培训】《新形态AI提效通识——OpenClaw/CC/Cowork快速入门》,大课堂产品线,,2026-02-28\r\nThe 10x You——从“会用工具”到“用AI重构你的工作方式”,AI提效类,引导学员从单纯会用AI工具，向用AI重构工作方式转变，分享高效工作思维与方法，助力学员实现工作效率10倍提升。,【培训】《The 10x You——从“会用工具”到“用AI重构你的工作方式”》,大课堂产品线,,2026-03-10\r\n新形态 AI 提效——集成交付项目实践,AI提效类,结合集成交付项目实战案例，讲解新形态AI提效在项目中的应用方法、执行流程及落地要点，提升学员项目实战能力。,【培训】《新形态 AI 提效——集成交付项目实践》,大课堂产品线,,2026-03-24\r\n新一代民办校学业解决方案宣贯,产品类,宣贯新一代民办校学业解决方案的核心内容、优势特点、适用场景及实施方法，帮助相关人员全面了解并推广该方案。,新一代民办校学业解决方案线上宣贯,交付服务部,精品课程,2026-03-23\r\n当前我国教育政策热点解读分析 ——“AI + 教育” 与 “四个未来”,教育素养类,聚焦当前我国教育政策热点，重点解读“AI+教育”与“四个未来”的核心内涵、实施要求及发展趋势，助力学员精准把握政策导向。,https://www.21tb.cn/IN4NE0ngPHShP,教育技术研究院,精品课程,2026-03-09\r\nSkills与OpenClaw介绍,AI提效类,详细介绍Skills的核心功能、使用场景，以及OpenClaw工具的特点、操作要点，帮助学员全面掌握两者的基础信息与使用方法。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnpteuh2943141foq9j7k9?from=from_copylink,大学情产品线,精品课程,2026-02-06\r\n人人都可创造AI数字人：讲解Claude Code的关键skills,AI提效类,面向所有学员，讲解使用Claude Code创造AI数字人的核心技巧，重点拆解关键skills，让学员快速掌握AI数字人创造方法。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn9z6g42zhhuqj52nx4g65?from=from_copylink,大学情产品线,,2026-03-06\r\n产品经理、项目经理、设计师 AI 提效实战案例分享,AI提效类,分享产品经理、项目经理、设计师三大岗位的AI提效实战案例，拆解AI工具在各岗位的应用技巧，助力相关岗位学员提升工作效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnes678s1m9t8y42by879u?from=from_copylink,大学情产品线,,2026-03-13\r\n招考平台国产化及商密实践,研发技术类,讲解招考平台国产化的实现路径、核心技术，以及商业秘密保护的实践方法、注意事项，保障招考平台安全合规运行。,https://ebg.iflytek.com/article/detail?id=hi7vp3p0mk7wj436lv4egu6a,技术平台部,,2026-03-11\r\n大学情自动化弹性伸缩平台建设实践,研发技术类,分享大学情自动化弹性伸缩平台的建设思路、技术架构、实施流程及实战经验，助力相关人员掌握平台建设核心要点。,【技术之声26年第2期】大学情自动化弹性伸缩平台建设实践 - EAI智教时间 - 教育BG技术门户,技术平台部,,2026-03-25\r\n智能运维Agent—— 自动化运维的新模式,研发技术类,介绍智能运维Agent的核心功能、工作原理，解读其作为自动化运维新模式的优势及应用场景，助力学员了解运维行业新趋势。,https://ebg.iflytek.com/article/detail?id=tn6xt53aqzqze26o0n57njl1,技术平台部,精品课程,2026-03-18\r\n新形态AI工具提效通识培训,AI提效类,开展新形态AI工具提效通识培训，覆盖AI工具的基础认知、应用逻辑及通用提效技巧，帮助学员建立AI提效基础思维。,https://www.21tb.cn/IN4NE0ngFEZ6G,技术平台部,,2026-03-06\r\n新形态AI工具提效进阶培训,AI提效类,在通识培训基础上，开展AI工具提效进阶培训，讲解复杂场景下的工具应用技巧、提效方案设计，提升学员AI提效进阶能力。,https://www.21tb.cn/IN4NE0ngRR0xR,技术平台部,精品课程,2026-03-13\r\n当 PM 遇上 AI Agent：基于真实案例的使用分享,AI提效类,结合真实案例，分享PM（产品经理）使用AI Agent的方法、技巧及应用场景，助力PM利用AI Agent提升工作效率与工作质量。,【远航分享】当 PM 遇上 AI Agent：基于真实案例的使用分享,考试与语言学习产品线,,2026-03-19\r\nCC & AIGC-项目实战,AI提效类,以项目实战为核心，讲解CC工具与AIGC技术在项目中的结合应用方法、执行流程及落地技巧，提升学员项目实战能力。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnhjzf8g827w335431tpkm,体验设计中心,精品课程,2026-03-17\r\nAI重塑高教生态与商业模式,AI提效类,解读AI技术对高等教育生态的重塑作用，分析AI驱动下高教行业的商业模式变革方向、核心逻辑及发展机遇。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnnqbqz4176417979g196r,高教产品线,,2026-03-26\r\nClaude Code 落地实操与黄金要点分享,AI提效类,讲解Claude Code的落地实操步骤、操作技巧，分享其使用过程中的黄金要点与避坑指南，帮助学员高效落地使用Claude Code。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnnqbqz4176417979g196r,高教产品线,,2026-03-26\r\n用CC打造智能体团队,AI提效类,分享利用CC工具打造智能体团队的方法、逻辑及管理技巧，指导学员搭建高效智能体团队，提升团队工作效率。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnnqbqz4176417979g196r,高教产品线,,2026-03-26\r\n数据驱动，精准提分-重构民办校“管-教-学”育人链路,产品类,讲解以数据驱动为核心的民办校提分策略，分享如何重构“管-教-学”育人链路，实现精准提分，提升民办校教学质量。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcn92w4kl85ym15w6gzftgm?from=from_copylink,市场与方案部,,2026-03-06\r\nAI工具提效通识培训,AI提效类,开展AI工具提效通识培训，覆盖AI工具的基础认知、应用逻辑及通用提效技巧，帮助学员建立AI提效基础思维。,https://yf2ljykclb.xfchat.iflytek.com/minutes/obcnji583ujs1h62byt2x482?from=from_copylink,运作支持部,,2026-03-20\r\n";
+const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
+const OPTIONAL_COLUMNS = ["课程属性"];
+const STORAGE_KEY = "hongxiang-plan-csv";
+const STORAGE_NAME_KEY = "hongxiang-plan-csv-name";
+const AUDIENCE_OPTIONS = ["全员", "管理者", "产品", "研发技术", "运营服务", "教学教研", "AI提效"];
+
+const els = {
+  csvInput: document.querySelector("#csvInput"),
+  resetData: document.querySelector("#resetData"),
+  adminPassword: document.querySelector("#adminPassword"),
+  unlockUpload: document.querySelector("#unlockUpload"),
+  passwordPanel: document.querySelector("#passwordPanel"),
+  passwordError: document.querySelector("#passwordError"),
+  uploadActions: document.querySelector("#uploadActions"),
+  dataSource: document.querySelector("#dataSource"),
+  latestMonth: document.querySelector("#latestMonth"),
+  totalCourses: document.querySelector("#totalCourses"),
+  totalDepartments: document.querySelector("#totalDepartments"),
+  totalTypes: document.querySelector("#totalTypes"),
+  monthCourses: document.querySelector("#monthCourses"),
+  typeChart: document.querySelector("#typeChart"),
+  deptChart: document.querySelector("#deptChart"),
+  actionMonth: document.querySelector("#actionMonth"),
+  newCourseCount: document.querySelector("#newCourseCount"),
+  newCourseList: document.querySelector("#newCourseList"),
+  recommendList: document.querySelector("#recommendList"),
+  selectedCount: document.querySelector("#selectedCount"),
+  selectedPreview: document.querySelector("#selectedPreview"),
+  copyShareList: document.querySelector("#copyShareList"),
+  clearSelected: document.querySelector("#clearSelected"),
+  shareCopyStatus: document.querySelector("#shareCopyStatus"),
+  thanksPeriod: document.querySelector("#thanksPeriod"),
+  monthlyThanksLabel: document.querySelector("#monthlyThanksLabel"),
+  yearlyThanksLabel: document.querySelector("#yearlyThanksLabel"),
+  monthlyThanksCopy: document.querySelector("#monthlyThanksCopy"),
+  yearlyThanksCopy: document.querySelector("#yearlyThanksCopy"),
+  monthlyRanking: document.querySelector("#monthlyRanking"),
+  yearlyRanking: document.querySelector("#yearlyRanking"),
+  searchInput: document.querySelector("#searchInput"),
+  typeFilter: document.querySelector("#typeFilter"),
+  deptFilter: document.querySelector("#deptFilter"),
+  audienceFilter: document.querySelector("#audienceFilter"),
+  monthFilter: document.querySelector("#monthFilter"),
+  sortSelect: document.querySelector("#sortSelect"),
+  courseRows: document.querySelector("#courseRows"),
+  resultCount: document.querySelector("#resultCount"),
+  emptyState: document.querySelector("#emptyState"),
+};
+
+let courses = [];
+let selectedCourseIds = new Set();
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    const next = text[i + 1];
+    if (quoted) {
+      if (char === '"' && next === '"') {
+        value += '"';
+        i += 1;
+      } else if (char === '"') {
+        quoted = false;
+      } else {
+        value += char;
+      }
+    } else if (char === '"') {
+      quoted = true;
+    } else if (char === ",") {
+      row.push(value);
+      value = "";
+    } else if (char === "\n") {
+      row.push(value);
+      rows.push(row);
+      row = [];
+      value = "";
+    } else if (char !== "\r") {
+      value += char;
+    }
+  }
+  row.push(value);
+  rows.push(row);
+
+  const headers = rows.shift().map((item) => item.trim().replace(/^\uFEFF/, ""));
+  return rows.map((cells) => {
+    const item = {};
+    headers.forEach((header, index) => {
+      item[header] = (cells[index] || "").trim();
+    });
+    return item;
+  });
+}
+
+function normalizeCourse(row) {
+  const item = {};
+  [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS].forEach((column) => {
+    const value = row[column];
+    item[column] = value instanceof Date ? value : String(value ?? "").trim();
+  });
+  item.date = parseDate(item["授课日期"]);
+  item.month = item.date ? formatMonth(item.date) : "未标日期";
+  item.audiences = inferAudiences(item);
+  item.isFeatured = String(item["课程属性"] || "").includes("精品课程");
+  return item;
+}
+
+function inferAudiences(item) {
+  const text = `${item["课程名称"]} ${item["课程类型"]} ${item["课程介绍"]}`.toLowerCase();
+  const audiences = new Set(["全员"]);
+  if (text.includes("领导") || text.includes("管理") || text.includes("团队")) audiences.add("管理者");
+  if (text.includes("产品") || text.includes("pm") || text.includes("方案")) audiences.add("产品");
+  if (text.includes("研发") || text.includes("技术") || text.includes("平台") || text.includes("运维") || text.includes("agent")) audiences.add("研发技术");
+  if (text.includes("运营") || text.includes("服务") || text.includes("交付") || text.includes("回访") || text.includes("售卖")) audiences.add("运营服务");
+  if (text.includes("教学") || text.includes("教研") || text.includes("讲题") || text.includes("板书") || text.includes("学员")) audiences.add("教学教研");
+  if (text.includes("ai") || text.includes("aigc") || text.includes("claude") || text.includes("openclaw") || text.includes("提效") || text.includes("cc")) audiences.add("AI提效");
+  return [...audiences];
+}
+
+function parseDate(value) {
+  if (!value) return null;
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  if (typeof value === "number") {
+    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+    return new Date(excelEpoch.getTime() + value * 24 * 60 * 60 * 1000);
+  }
+  const normalized = value.replaceAll("/", "-");
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatDate(date) {
+  if (!date) return "未标日期";
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+}
+
+function formatMonth(date) {
+  return date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}` : "未标日期";
+}
+
+function cleanRows(rows) {
+  return rows
+    .map(normalizeCourse)
+    .filter((row) => REQUIRED_COLUMNS.some((column) => row[column]))
+    .filter((row) => row["课程名称"] && row["课程链接"])
+    .map((row, index) => ({ ...row, id: `course-${index}` }));
+}
+
+function countBy(items, key) {
+  return items.reduce((acc, item) => {
+    const value = item[key] || "未标注";
+    acc[value] = (acc[value] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function uniqueValues(items, key) {
+  return [...new Set(items.map((item) => item[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
+}
+
+function setOptions(select, values, allLabel) {
+  const current = select.value;
+  select.innerHTML = `<option value="">${allLabel}</option>` + values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+  select.value = values.includes(current) ? current : "";
+}
+
+function renderAll(sourceName = "默认数据") {
+  const validDates = courses.map((item) => item.date).filter(Boolean).sort((a, b) => b - a);
+  const latestDate = validDates[0] || null;
+  const latestMonth = latestDate ? formatMonth(latestDate) : "--";
+  const latestMonthCourses = courses.filter((item) => item.month === latestMonth).length;
+
+  els.dataSource.textContent = sourceName;
+  els.latestMonth.textContent = latestMonth === "--" ? "暂无日期" : `${latestMonth} 更新`;
+  els.totalCourses.textContent = courses.length;
+  els.totalDepartments.textContent = uniqueValues(courses, "二级部门").length;
+  els.totalTypes.textContent = uniqueValues(courses, "课程类型").length;
+  els.monthCourses.textContent = latestMonthCourses;
+
+  setOptions(els.typeFilter, uniqueValues(courses, "课程类型"), "全部类型");
+  setOptions(els.deptFilter, uniqueValues(courses, "二级部门"), "全部部门");
+  setOptions(els.audienceFilter, AUDIENCE_OPTIONS, "全部人群");
+  setOptions(els.monthFilter, uniqueValues(courses, "month").reverse(), "全部月份");
+
+  renderChart(els.typeChart, countBy(courses, "课程类型"));
+  renderChart(els.deptChart, countBy(courses, "二级部门"), 8);
+  renderActionPanel(latestMonth);
+  renderThanks(latestDate);
+  renderSelectedList();
+  renderCourses();
+}
+
+function renderChart(target, counts, limit = 7) {
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit);
+  const max = Math.max(1, ...entries.map((entry) => entry[1]));
+  target.innerHTML = entries
+    .map(([label, value]) => {
+      const width = Math.max(6, Math.round((value / max) * 100));
+      return `
+        <div class="bar-row">
+          <div class="bar-label" title="${escapeHtml(label)}">${escapeHtml(label)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div>
+          <div class="bar-value">${value}</div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderThanks(latestDate) {
+  const latestMonth = latestDate ? formatMonth(latestDate) : "";
+  const latestYear = latestDate ? String(latestDate.getFullYear()) : "";
+  const monthlyItems = latestMonth ? courses.filter((item) => item.month === latestMonth) : [];
+  const yearlyItems = latestYear ? courses.filter((item) => item.date && String(item.date.getFullYear()) === latestYear) : courses;
+
+  els.thanksPeriod.textContent = latestMonth ? `当前月度：${latestMonth}` : "按贡献课程数统计";
+  els.monthlyThanksLabel.textContent = latestMonth || "--";
+  els.yearlyThanksLabel.textContent = latestYear || "--";
+
+  const monthlyTop = rankingByDepartment(monthlyItems);
+  const yearlyTop = rankingByDepartment(yearlyItems);
+
+  els.monthlyThanksCopy.textContent = makeThanksCopy(monthlyTop, "本月");
+  els.yearlyThanksCopy.textContent = makeThanksCopy(yearlyTop, "年度");
+  els.monthlyRanking.innerHTML = renderRanking(monthlyTop);
+  els.yearlyRanking.innerHTML = renderRanking(yearlyTop);
+}
+
+function renderActionPanel(latestMonth) {
+  const monthlyItems = courses.filter((item) => item.month === latestMonth).sort((a, b) => (b.date || 0) - (a.date || 0));
+  const recommended = pickRecommendedCourses(monthlyItems.length ? monthlyItems : courses);
+  els.actionMonth.textContent = latestMonth && latestMonth !== "--" ? `${latestMonth} 行动建议` : "行动建议";
+  els.newCourseCount.textContent = `${monthlyItems.length} 门`;
+  els.newCourseList.innerHTML = renderMiniList(monthlyItems.slice(0, 5), "暂无本月新增课程。");
+  els.recommendList.innerHTML = renderMiniList(recommended, "暂无可推荐课程。");
+}
+
+function pickRecommendedCourses(items) {
+  const priority = ["AI提效类", "领导力类", "运营类", "教学类", "产品类", "研发技术类", "教育素养类"];
+  const picked = [];
+  for (const item of items.filter((course) => course.isFeatured)) {
+    if (!picked.includes(item)) picked.push(item);
+    if (picked.length >= 5) break;
+  }
+  for (const type of priority) {
+    const match = items.find((item) => item["课程类型"] === type && !picked.includes(item));
+    if (match) picked.push(match);
+    if (picked.length >= 5) break;
+  }
+  for (const item of items) {
+    if (!picked.includes(item)) picked.push(item);
+    if (picked.length >= 5) break;
+  }
+  return picked;
+}
+
+function renderMiniList(items, emptyText) {
+  if (!items.length) return `<div class="empty visible">${emptyText}</div>`;
+  return items
+    .map((item) => {
+      return `
+        <div class="mini-item">
+          <div class="mini-title" title="${escapeHtml(item["课程名称"])}">${escapeHtml(item["课程名称"])}</div>
+          <div class="mini-meta">${escapeHtml(item["课程类型"] || "未标注")} · ${escapeHtml(item["二级部门"] || "未标注")} · ${formatDate(item.date)}${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}</div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function unlockMaintenance() {
+  if (els.adminPassword.value.trim() !== "907") {
+    els.passwordError.textContent = "密码不正确。";
+    els.adminPassword.select();
+    return;
+  }
+  els.passwordError.textContent = "";
+  els.passwordPanel.style.display = "none";
+  els.uploadActions.classList.remove("locked");
+}
+
+function rankingByDepartment(items) {
+  return Object.entries(countBy(items, "二级部门"))
+    .filter(([name]) => name && name !== "未标注")
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "zh-Hans-CN"))
+    .slice(0, 5)
+    .map(([name, count], index) => ({ name, count, rank: index + 1 }));
+}
+
+function makeThanksCopy(ranking, label) {
+  if (!ranking.length) return `暂无${label}贡献数据，期待后续沉淀更多课程资源。`;
+  const names = ranking.slice(0, 3).map((item) => item.name).join("、");
+  return `感谢${names}等部门在${label}积极沉淀课程资源，让优秀经验被更多团队看见和复用。`;
+}
+
+function renderRanking(ranking) {
+  if (!ranking.length) return `<div class="empty visible">暂无贡献数据。</div>`;
+  return ranking
+    .map((item) => {
+      return `
+        <div class="ranking-item">
+          <div class="rank-num">${item.rank}</div>
+          <div class="rank-main">
+            <div class="rank-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+            <div class="rank-note">${item.rank === 1 ? "特别致敬" : "感谢贡献"}</div>
+          </div>
+          <div class="rank-count">${item.count}</div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderCourses() {
+  const keyword = els.searchInput.value.trim().toLowerCase();
+  const type = els.typeFilter.value;
+  const dept = els.deptFilter.value;
+  const audience = els.audienceFilter.value;
+  const month = els.monthFilter.value;
+  const sort = els.sortSelect.value;
+
+  let filtered = courses.filter((item) => {
+    const haystack = `${item["课程名称"]} ${item["课程介绍"]} ${item["二级部门"]} ${item["课程类型"]}`.toLowerCase();
+    return (
+      (!keyword || haystack.includes(keyword)) &&
+      (!type || item["课程类型"] === type) &&
+      (!dept || item["二级部门"] === dept) &&
+      (!audience || item.audiences.includes(audience)) &&
+      (!month || item.month === month)
+    );
+  });
+
+  filtered = filtered.sort((a, b) => {
+    if (sort === "date-asc") return (a.date || 0) - (b.date || 0);
+    if (sort === "name-asc") return a["课程名称"].localeCompare(b["课程名称"], "zh-Hans-CN");
+    return (b.date || 0) - (a.date || 0);
+  });
+
+  els.resultCount.textContent = `${filtered.length} 条`;
+  els.emptyState.classList.toggle("visible", filtered.length === 0);
+  els.courseRows.innerHTML = filtered
+    .map((item) => {
+      return `
+        <tr>
+          <td class="select-cell">
+            <input class="select-course" type="checkbox" data-course-id="${escapeHtml(item.id)}" ${selectedCourseIds.has(item.id) ? "checked" : ""} aria-label="选择 ${escapeHtml(item["课程名称"])}" />
+          </td>
+          <td>
+            <p class="course-title">
+              <a href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">${escapeHtml(item["课程名称"])}</a>
+              ${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}
+            </p>
+            <p class="course-desc">${escapeHtml(item["课程介绍"])}</p>
+          </td>
+          <td><span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span></td>
+          <td>${escapeHtml(item["二级部门"] || "未标注")}</td>
+          <td>${formatDate(item.date)}</td>
+          <td>
+            <div class="row-actions">
+              <a class="open-link" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">查看课程</a>
+              <button class="copy-course" type="button" data-course-id="${escapeHtml(item.id)}">复制推荐语</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+function getSelectedCourses() {
+  return courses.filter((item) => selectedCourseIds.has(item.id));
+}
+
+function renderSelectedList() {
+  const selected = getSelectedCourses();
+  els.selectedCount.textContent = `已选 ${selected.length} 门`;
+  if (!selected.length) {
+    els.selectedPreview.textContent = "还没有选择课程。";
+    return;
+  }
+  els.selectedPreview.innerHTML = `<ol>${selected.map((item) => `<li>${escapeHtml(item["课程名称"])}</li>`).join("")}</ol>`;
+}
+
+function buildCourseCopy(item) {
+  return [
+    `推荐学习：《${item["课程名称"]}》`,
+    `适合人群：${item.audiences.filter((name) => name !== "全员").join("、") || "全员"}`,
+    `推荐理由：${item["课程介绍"]}`,
+    `课程链接：${item["课程链接"]}`,
+  ].join("\n");
+}
+
+function buildShareList() {
+  const items = getSelectedCourses();
+  const latestMonth = courses.map((item) => item.date).filter(Boolean).sort((a, b) => b - a)[0];
+  const latestMonthText = latestMonth ? formatMonth(latestMonth) : "";
+  const lines = [`【鸿享计划｜${latestMonthText || "近期"}学习推荐】`, "为大家整理了以下课程，建议按需学习："];
+  items.forEach((item, index) => {
+    lines.push(`${index + 1}. 《${item["课程名称"]}》`);
+    lines.push(`   推荐理由：${item["课程介绍"]}`);
+    lines.push(`   链接：${item["课程链接"]}`);
+  });
+  lines.push("欢迎按需学习，也欢迎继续贡献优秀课程与经验材料。");
+  lines.push("课程涉及敏感信息，如需针对性推送观看，请咨询何亮亮 llhe11");
+  return lines.join("\n");
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const ok = document.execCommand("copy");
+    textarea.remove();
+    return ok;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  const text = String(value ?? "");
+  if (!/^https?:\/\//i.test(text)) return "#";
+  return escapeHtml(text);
+}
+
+async function loadDefaultData() {
+  return EMBEDDED_CSV;
+}
+
+function decodeCsvBuffer(buffer) {
+  const decoders = [
+    new TextDecoder("utf-8", { fatal: true }),
+    new TextDecoder("gb18030"),
+  ];
+  for (const decoder of decoders) {
+    try {
+      return decoder.decode(buffer);
+    } catch {
+      continue;
+    }
+  }
+  return new TextDecoder().decode(buffer);
+}
+
+async function boot() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  const savedName = localStorage.getItem(STORAGE_NAME_KEY);
+  const defaultText = saved || (await loadDefaultData());
+  let parsedRows;
+  if (saved?.startsWith("{")) {
+    try {
+      const payload = JSON.parse(saved);
+      parsedRows = payload.type === "xlsx-json" ? payload.rows : parseCsv(defaultText);
+    } catch {
+      parsedRows = parseCsv(defaultText);
+    }
+  } else {
+    parsedRows = parseCsv(defaultText);
+  }
+  courses = cleanRows(parsedRows);
+  renderAll(saved ? savedName || "已上传数据" : "默认数据");
+}
+
+els.csvInput.addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const buffer = await file.arrayBuffer();
+  const isExcel = /\.(xlsx|xls)$/i.test(file.name);
+  const text = isExcel ? "" : decodeCsvBuffer(buffer);
+  const parsed = isExcel ? await parseExcelBuffer(buffer) : parseCsv(text);
+  const rows = cleanRows(parsed);
+  const missing = REQUIRED_COLUMNS.filter((column) => !Object.prototype.hasOwnProperty.call(parsed[0] || {}, column));
+  if (missing.length) {
+    alert(`导入文件缺少字段：${missing.join("、")}`);
+    return;
+  }
+  selectedCourseIds = new Set();
+  courses = rows;
+  localStorage.setItem(STORAGE_KEY, isExcel ? JSON.stringify({ type: "xlsx-json", rows: parsed }) : text);
+  localStorage.setItem(STORAGE_NAME_KEY, file.name);
+  renderAll(file.name);
+  event.target.value = "";
+});
+
+els.resetData.addEventListener("click", async () => {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(STORAGE_NAME_KEY);
+  selectedCourseIds = new Set();
+  courses = cleanRows(parseCsv(await loadDefaultData()));
+  renderAll("默认数据");
+});
+
+els.unlockUpload.addEventListener("click", unlockMaintenance);
+els.adminPassword.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") unlockMaintenance();
+});
+
+els.copyShareList.addEventListener("click", async () => {
+  if (!selectedCourseIds.size) {
+    els.shareCopyStatus.textContent = "请先在课程资源中勾选课程。";
+    window.setTimeout(() => {
+      els.shareCopyStatus.textContent = "";
+    }, 2200);
+    return;
+  }
+  const ok = await copyText(buildShareList());
+  els.shareCopyStatus.textContent = ok ? "学习清单已复制。" : "复制失败，请手动复制。";
+  window.setTimeout(() => {
+    els.shareCopyStatus.textContent = "";
+  }, 2200);
+});
+
+els.clearSelected.addEventListener("click", () => {
+  selectedCourseIds = new Set();
+  renderSelectedList();
+  renderCourses();
+});
+
+els.courseRows.addEventListener("click", async (event) => {
+  const checkbox = event.target.closest(".select-course");
+  if (checkbox) {
+    if (checkbox.checked) selectedCourseIds.add(checkbox.dataset.courseId);
+    else selectedCourseIds.delete(checkbox.dataset.courseId);
+    renderSelectedList();
+    return;
+  }
+
+  const button = event.target.closest(".copy-course");
+  if (!button) return;
+  const item = courses.find((course) => course.id === button.dataset.courseId);
+  if (!item) return;
+  const ok = await copyText(buildCourseCopy(item));
+  button.textContent = ok ? "已复制" : "复制失败";
+  window.setTimeout(() => {
+    button.textContent = "复制推荐语";
+  }, 1600);
+});
+
+[els.searchInput, els.typeFilter, els.deptFilter, els.audienceFilter, els.monthFilter, els.sortSelect].forEach((control) => {
+  control.addEventListener("input", renderCourses);
+  control.addEventListener("change", renderCourses);
+});
+
+boot().catch((error) => {
+  console.error(error);
+  els.emptyState.textContent = "数据加载失败，请检查 CSV 文件。";
+  els.emptyState.classList.add("visible");
+});
+
+    </script>
+  </body>
+</html>
