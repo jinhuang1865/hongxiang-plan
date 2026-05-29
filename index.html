@@ -6,18 +6,26 @@
     <title>鸿享计划</title>
     <style>
 :root {
-  --bg: #f5f7fb;
+  --bg: #f0f4f8;
   --surface: #ffffff;
-  --surface-2: #eef3f7;
-  --text: #17202a;
-  --muted: #657386;
-  --line: #dbe2ea;
-  --brand: #1f7a73;
-  --brand-dark: #145650;
-  --accent: #c9822b;
+  --surface-2: #e8edf2;
+  --text: #1a2332;
+  --muted: #6b7d95;
+  --line: #d5dde5;
+  --brand: #1a6b63;
+  --brand-light: #e8f5f2;
+  --brand-dark: #0f4540;
+  --accent: #d4892a;
+  --accent-light: #fef3e4;
   --blue: #2f6fbb;
   --red: #b95045;
-  --shadow: 0 14px 36px rgba(29, 43, 62, 0.08);
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow: 0 4px 16px rgba(16, 24, 40, 0.06), 0 2px 6px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.08), 0 4px 10px rgba(16, 24, 40, 0.04);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --transition: 0.2s ease;
 }
 
 * {
@@ -33,7 +41,10 @@ body {
   min-height: 100vh;
   color: var(--text);
   background: var(--bg);
-  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  font-family: "Microsoft YaHei", "PingFang SC", -apple-system, "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -45,6 +56,15 @@ select {
 button,
 select {
   cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), opacity var(--transition);
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.98);
 }
 
 .app {
@@ -60,15 +80,16 @@ select {
   display: flex;
   flex-direction: column;
   gap: 26px;
-  padding: 28px 22px;
-  color: #f7fbfa;
-  background: #173c42;
+  padding: 32px 24px;
+  color: #f2f8f7;
+  background: linear-gradient(180deg, #123430 0%, #184a44 40%, #0f2e2b 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .brand-mark {
@@ -76,43 +97,54 @@ select {
   height: 48px;
   display: grid;
   place-items: center;
-  border-radius: 8px;
-  background: #f5c35a;
-  color: #173c42;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #f5c35a 0%, #e8a82e 100%);
+  color: #123430;
   font-size: 24px;
   font-weight: 800;
+  box-shadow: 0 4px 12px rgba(245, 195, 90, 0.25);
 }
 
 .brand h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
+  font-weight: 800;
   line-height: 1.1;
+  letter-spacing: 0.5px;
 }
 
 .brand p,
 .hint {
-  margin: 5px 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.55);
   font-size: 13px;
   line-height: 1.6;
 }
 
 .nav {
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 
 .nav a {
-  padding: 10px 12px;
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.72);
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--transition);
 }
 
-.nav a.active,
+.nav a.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+}
+
 .nav a:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .section-title {
@@ -130,28 +162,6 @@ select {
   color: var(--muted);
 }
 
-.upload-box {
-  display: grid;
-  gap: 6px;
-  padding: 14px;
-  border: 1px dashed var(--line);
-  border-radius: 8px;
-  background: #fff;
-}
-
-.upload-box input {
-  display: none;
-}
-
-.upload-box strong {
-  color: var(--text);
-}
-
-.upload-box span {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
 
 .ghost-button {
   padding: 10px 12px;
@@ -163,7 +173,7 @@ select {
 
 .main {
   min-width: 0;
-  padding: 30px clamp(22px, 4vw, 48px) 52px;
+  padding: 36px clamp(24px, 4vw, 52px) 60px;
 }
 
 .hero {
@@ -171,39 +181,43 @@ select {
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 22px;
+  margin-bottom: 28px;
 }
 
 .eyebrow {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   color: var(--brand);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
 .hero h2 {
   max-width: 780px;
   margin: 0;
-  font-size: clamp(28px, 4vw, 46px);
-  line-height: 1.16;
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
 }
 
 .month-pill {
   flex: 0 0 auto;
-  padding: 10px 14px;
+  padding: 10px 18px;
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--brand-dark);
-  background: #e7f4ef;
+  background: var(--brand-light);
   font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
 }
 
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .metrics article,
@@ -212,27 +226,36 @@ select {
 .thanks-section,
 .resource-section {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow);
 }
 
 .metrics article {
-  padding: 16px;
+  padding: 20px 22px;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.metrics article:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .metrics span {
   display: block;
   color: var(--muted);
   font-size: 13px;
+  font-weight: 600;
 }
 
 .metrics strong {
   display: block;
-  margin-top: 8px;
+  margin-top: 10px;
   color: var(--brand-dark);
-  font-size: 34px;
+  font-size: 38px;
+  font-weight: 800;
   line-height: 1;
+  letter-spacing: -1px;
 }
 
 .dashboard {
@@ -243,7 +266,7 @@ select {
 }
 
 .chart-block {
-  padding: 18px;
+  padding: 20px 22px;
 }
 
 .bar-chart {
@@ -266,6 +289,7 @@ select {
   color: var(--text);
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 600;
 }
 
 .bar-track {
@@ -278,17 +302,23 @@ select {
 .bar-fill {
   height: 100%;
   border-radius: inherit;
-  background: var(--brand);
+  background: linear-gradient(90deg, var(--brand), var(--brand));
+  transition: width 0.6s ease;
 }
 
 .bar-row:nth-child(2n) .bar-fill {
-  background: var(--blue);
+  background: linear-gradient(90deg, var(--blue), #5294d9);
+}
+
+.bar-row:nth-child(3n) .bar-fill {
+  background: linear-gradient(90deg, var(--accent), #e8a82e);
 }
 
 .bar-value {
   color: var(--muted);
   text-align: right;
   font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 .action-section {
@@ -300,15 +330,21 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr minmax(260px, 0.8fr);
   gap: 14px;
-  padding: 0 20px 20px;
+  padding: 0 22px 22px;
 }
 
 .action-card {
   min-width: 0;
-  padding: 18px;
+  padding: 20px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-card.share-builder {
+  background: linear-gradient(135deg, #fafdfb 0%, #f3f9f7 100%);
+  border-color: rgba(26, 107, 99, 0.15);
 }
 
 .mini-list {
@@ -320,7 +356,7 @@ select {
 .mini-item {
   display: grid;
   gap: 5px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -331,15 +367,15 @@ select {
 .mini-title {
   overflow: hidden;
   color: var(--text);
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: color var(--transition);
 }
 
 .mini-title:hover {
   color: var(--brand);
-  text-decoration: underline;
 }
 
 .mini-meta {
@@ -352,12 +388,34 @@ select {
   align-items: center;
   min-height: 22px;
   margin-left: 6px;
-  padding: 2px 8px;
+  padding: 2px 10px;
   border-radius: 999px;
-  color: #7b4b00;
-  background: #fff0c7;
+  color: #8b6210;
+  background: linear-gradient(135deg, #fff0c7, #ffe8a3);
   font-size: 12px;
   font-weight: 800;
+}
+
+.featured-definition {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid #f1d792;
+  border-radius: var(--radius);
+  color: #6f4a08;
+  background: #fff8df;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.featured-definition strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #5e3d05;
+}
+
+.featured-definition ul {
+  margin: 0;
+  padding-left: 18px;
 }
 
 .share-builder {
@@ -369,14 +427,16 @@ select {
 .share-builder button,
 .copy-course {
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: #fff;
   background: var(--brand);
   font-weight: 700;
 }
 
 .share-builder button {
-  min-height: 40px;
+  min-height: 42px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
 }
 
 .builder-hint {
@@ -390,11 +450,11 @@ select {
   min-height: 92px;
   max-height: 160px;
   overflow: auto;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: var(--muted);
-  background: #f8fafc;
+  background: var(--bg);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -406,8 +466,9 @@ select {
 
 .plain-button {
   color: var(--text) !important;
-  background: #fff !important;
+  background: var(--surface) !important;
   border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
 }
 
 .copy-status {
@@ -426,14 +487,15 @@ select {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
-  padding: 0 20px 20px;
+  padding: 0 22px 22px;
 }
 
 .thanks-card {
-  padding: 18px;
+  padding: 20px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 72%);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #fffbf5 0%, #ffffff 72%);
+  box-shadow: var(--shadow-sm);
 }
 
 .thanks-copy {
@@ -454,25 +516,30 @@ select {
   align-items: center;
   gap: 10px;
   min-height: 44px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid #eadfc8;
-  border-radius: 8px;
-  background: #fff;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  transition: box-shadow var(--transition);
+}
+
+.ranking-item:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .ranking-item:first-child {
   border-color: #e7c671;
-  background: #fff8e1;
+  background: linear-gradient(135deg, #fff8e1, #fffdf5);
 }
 
 .rank-num {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   color: #fff;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), #e8a82e);
   font-size: 13px;
   font-weight: 800;
 }
@@ -483,7 +550,7 @@ select {
 
 .rank-name {
   overflow: hidden;
-  font-weight: 800;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -496,7 +563,7 @@ select {
 
 .rank-count {
   color: var(--brand-dark);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
@@ -506,106 +573,39 @@ select {
   overflow: hidden;
 }
 
-.maintenance-panel {
-  margin-top: 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.68);
-  box-shadow: var(--shadow);
-}
-
-.maintenance-panel summary {
-  min-height: 44px;
-  padding: 12px 18px;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 700;
-}
 
 .maintenance-body {
   display: grid;
   gap: 12px;
-  padding: 0 18px 18px;
+  padding: 0 22px 22px;
 }
 
-.password-row {
-  display: grid;
-  grid-template-columns: minmax(180px, 260px) 110px;
-  gap: 8px;
-}
-
-.password-row input {
-  min-height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 0 10px;
-}
-
-.password-row button {
-  border: 0;
-  border-radius: 6px;
-  color: #fff;
-  background: var(--brand);
-  font-weight: 700;
-}
-
-.password-error {
-  min-height: 18px;
-  margin: -6px 0 0;
-  color: var(--red);
-  font-size: 13px;
-}
-
-.upload-status {
-  min-height: 20px;
-  margin: -2px 0 0;
-  color: var(--brand-dark);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.upload-status.error {
-  color: var(--red);
-}
-
-.upload-actions {
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) 140px;
-  gap: 10px;
-  align-items: stretch;
-}
-
-.upload-actions.locked {
-  display: none;
-}
-
-.maintenance-body .hint {
-  color: var(--muted);
-}
 
 .section-head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 18px;
-  padding: 20px 20px 14px;
+  padding: 22px 22px 14px;
 }
 
 .section-head h3 {
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
+  font-weight: 800;
 }
 
 .result-count {
   color: var(--muted);
   font-size: 14px;
+  font-weight: 600;
 }
 
 .toolbar {
   display: grid;
   grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(120px, 0.75fr));
-  gap: 10px;
-  padding: 0 20px 18px;
+  gap: 12px;
+  padding: 0 22px 18px;
 }
 
 .toolbar label {
@@ -619,17 +619,70 @@ select {
 .toolbar input,
 .toolbar select {
   width: 100%;
-  min-height: 40px;
+  min-height: 42px;
   border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
   color: var(--text);
-  background: #fff;
+  background: var(--surface);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(26, 107, 99, 0.1);
+}
+
+.resource-share-builder {
+  margin: 0 22px 18px;
+}
+
+.resource-share-builder .selected-preview {
+  min-height: 74px;
+}
+
+.resource-share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resource-share-actions button {
+  min-width: 120px;
+  padding: 0 14px;
 }
 
 .resource-table-wrap {
   overflow-x: auto;
   border-top: 1px solid var(--line);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 22px 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pagination button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  color: #a7b0bc;
+  background: var(--bg);
 }
 
 table {
@@ -640,7 +693,7 @@ table {
 
 th,
 td {
-  padding: 13px 16px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
@@ -648,13 +701,17 @@ td {
 
 th {
   color: var(--muted);
-  background: #f8fafc;
+  background: var(--bg);
   font-size: 12px;
   font-weight: 800;
 }
 
 td {
   font-size: 14px;
+}
+
+tr:hover td {
+  background: rgba(26, 107, 99, 0.02);
 }
 
 .select-cell {
@@ -665,21 +722,22 @@ td {
   width: 18px;
   height: 18px;
   accent-color: var(--brand);
+  cursor: pointer;
 }
 
 .course-title {
   margin: 0 0 6px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .course-title a {
   color: var(--text);
   text-decoration: none;
+  transition: color var(--transition);
 }
 
 .course-title a:hover {
   color: var(--brand);
-  text-decoration: underline;
 }
 
 .course-desc {
@@ -693,10 +751,10 @@ td {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: 999px;
   color: var(--brand-dark);
-  background: #e5f2ee;
+  background: var(--brand-light);
   font-size: 12px;
   font-weight: 700;
 }
@@ -705,14 +763,19 @@ td {
   display: inline-flex;
   align-items: center;
   min-height: 32px;
-  padding: 0 10px;
-  border-radius: 6px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
   color: #fff;
   background: var(--brand);
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
+  transition: background var(--transition);
+}
+
+.open-link:hover {
+  background: var(--brand-dark);
 }
 
 .row-actions {
@@ -723,16 +786,18 @@ td {
 
 .copy-course {
   min-height: 32px;
-  padding: 0 10px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   white-space: nowrap;
 }
 
 .empty {
   display: none;
-  padding: 28px;
+  padding: 40px;
   color: var(--muted);
   text-align: center;
+  font-size: 14px;
 }
 
 .empty.visible {
@@ -780,8 +845,6 @@ td {
   .dashboard,
   .action-grid,
   .thanks-grid,
-  .upload-actions,
-  .password-row,
   .toolbar {
     grid-template-columns: 1fr;
   }
@@ -874,17 +937,15 @@ td {
                 <small>精品课程优先</small>
               </div>
               <div class="mini-list" id="recommendList"></div>
-            </article>
-            <article class="action-card share-builder">
-              <div class="section-title">
-                <span>已选学习清单</span>
-                <small id="selectedCount">已选 0 门</small>
+              <div class="featured-definition">
+                <strong>精品课程定义</strong>
+                <ul>
+                  <li>课程内容结构更完整、逻辑更清晰</li>
+                  <li>覆盖面更广，推广价值更高</li>
+                  <li>实用性更强，上手应用价值更高</li>
+                  <li>课程满意度 ≥ 4.5 分（满分 5 分）</li>
+                </ul>
               </div>
-              <p class="builder-hint">在课程资源里勾选课程后，可生成一段适合I讯飞群转发的学习推荐。</p>
-              <div class="selected-preview" id="selectedPreview">还没有选择课程。</div>
-              <button id="copyShareList" type="button">复制转发清单</button>
-              <button class="plain-button" id="clearSelected" type="button">清空已选</button>
-              <p class="copy-status" id="shareCopyStatus"></p>
             </article>
           </div>
         </section>
@@ -925,6 +986,20 @@ td {
             </label>
           </div>
 
+          <article class="action-card share-builder resource-share-builder">
+            <div class="section-title">
+              <span>已选学习推荐</span>
+              <small id="selectedCount">已选 0 门</small>
+            </div>
+            <p class="builder-hint">在课程资源里勾选课程后，可生成一段适合一键转发的学习推荐，帮助转岗同事、新员工或新接手业务的伙伴更快找到学习路径、适应岗位需要。</p>
+            <div class="selected-preview" id="selectedPreview">还没有选择课程。</div>
+            <div class="resource-share-actions">
+              <button id="copyShareList" type="button">复制转发清单</button>
+              <button class="plain-button" id="clearSelected" type="button">清空已选</button>
+            </div>
+            <p class="copy-status" id="shareCopyStatus"></p>
+          </article>
+
           <div class="resource-table-wrap">
             <table>
               <thead>
@@ -940,33 +1015,13 @@ td {
               <tbody id="courseRows"></tbody>
             </table>
           </div>
+          <div class="pagination" id="pagination">
+            <button id="prevPage" type="button">上一页</button>
+            <span id="pageInfo">第 1 / 1 页</span>
+            <button id="nextPage" type="button">下一页</button>
+          </div>
           <div class="empty" id="emptyState">没有匹配的课程。</div>
         </section>
-
-        <details class="maintenance-panel" id="update">
-          <summary>数据维护</summary>
-          <div class="maintenance-body">
-            <div class="section-title">
-              <span>月度更新</span>
-              <small id="dataSource">默认数据</small>
-            </div>
-            <div class="password-row" id="passwordPanel">
-              <input id="adminPassword" type="password" inputmode="numeric" placeholder="输入维护密码" />
-              <button id="unlockUpload" type="button">解锁上传</button>
-            </div>
-            <p class="password-error" id="passwordError"></p>
-            <div class="upload-actions locked" id="uploadActions">
-              <label class="upload-box" for="csvInput">
-                <input id="csvInput" type="file" accept=".xlsx,.xls,.csv,text/csv" />
-                <strong>上传 Excel / CSV</strong>
-                <span>按模板上传后会与当前数据合并并去重，当前浏览器会记住最近一次维护结果。</span>
-              </label>
-              <button class="ghost-button" id="resetData" type="button">恢复默认数据</button>
-            </div>
-            <p class="upload-status" id="uploadStatus"></p>
-            <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。上传后暂存本地浏览器，如需更新云端数据请联系管理员。</p>
-          </div>
-        </details>
 
         <section class="thanks-section" id="thanks">
           <div class="section-head">
@@ -1001,18 +1056,7 @@ td {
 const CSV_RAW_URL = "./courses.csv";
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
-const STORAGE_KEY = "hongxiang-plan-csv";
-const STORAGE_NAME_KEY = "hongxiang-plan-csv-name";
 const els = {
-  csvInput: document.querySelector("#csvInput"),
-  resetData: document.querySelector("#resetData"),
-  adminPassword: document.querySelector("#adminPassword"),
-  unlockUpload: document.querySelector("#unlockUpload"),
-  passwordPanel: document.querySelector("#passwordPanel"),
-  passwordError: document.querySelector("#passwordError"),
-  uploadActions: document.querySelector("#uploadActions"),
-  uploadStatus: document.querySelector("#uploadStatus"),
-  dataSource: document.querySelector("#dataSource"),
   latestMonth: document.querySelector("#latestMonth"),
   totalCourses: document.querySelector("#totalCourses"),
   totalDepartments: document.querySelector("#totalDepartments"),
@@ -1043,11 +1087,17 @@ const els = {
   sortSelect: document.querySelector("#sortSelect"),
   courseRows: document.querySelector("#courseRows"),
   resultCount: document.querySelector("#resultCount"),
+  pagination: document.querySelector("#pagination"),
+  pageInfo: document.querySelector("#pageInfo"),
+  prevPage: document.querySelector("#prevPage"),
+  nextPage: document.querySelector("#nextPage"),
   emptyState: document.querySelector("#emptyState"),
 };
 
 let courses = [];
 let selectedCourseIds = new Set();
+let currentPage = 1;
+const PAGE_SIZE = 20;
 
 function parseCsv(text) {
   const rows = [];
@@ -1186,7 +1236,6 @@ function renderAll(sourceName = "默认数据") {
   const latestMonth = latestDate ? formatMonth(latestDate) : "--";
   const latestMonthCourses = courses.filter((item) => item.month === latestMonth).length;
 
-  els.dataSource.textContent = sourceName;
   els.latestMonth.textContent = latestMonth === "--" ? "暂无日期" : `${latestMonth} 更新`;
   els.totalCourses.textContent = courses.length;
   els.totalDepartments.textContent = uniqueValues(courses, "二级部门").length;
@@ -1283,21 +1332,6 @@ function renderMiniList(items, emptyText) {
     .join("");
 }
 
-function unlockMaintenance() {
-  if (els.adminPassword.value.trim() !== "907") {
-    els.passwordError.textContent = "密码不正确。";
-    els.adminPassword.select();
-    return;
-  }
-  els.passwordError.textContent = "";
-  els.passwordPanel.style.display = "none";
-  els.uploadActions.classList.remove("locked");
-}
-
-function setUploadStatus(message, type = "info") {
-  els.uploadStatus.textContent = message;
-  els.uploadStatus.classList.toggle("error", type === "error");
-}
 
 function rankingByDepartment(items) {
   return Object.entries(countBy(items, "二级部门"))
@@ -1354,9 +1388,17 @@ function renderCourses() {
     return (b.date || 0) - (a.date || 0);
   });
 
-  els.resultCount.textContent = `${filtered.length} 条`;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  currentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  els.resultCount.textContent = `${filtered.length} 条 · 第 ${currentPage} / ${totalPages} 页`;
   els.emptyState.classList.toggle("visible", filtered.length === 0);
-  els.courseRows.innerHTML = filtered
+  els.pagination.style.display = filtered.length > PAGE_SIZE ? "flex" : "none";
+  els.pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
+  els.prevPage.disabled = currentPage <= 1;
+  els.nextPage.disabled = currentPage >= totalPages;
+  els.courseRows.innerHTML = pageItems
     .map((item) => {
       return `
         <tr>
@@ -1418,7 +1460,6 @@ function buildShareList() {
     lines.push(`   链接：${item["课程链接"]}`);
   });
   lines.push("欢迎按需学习，也欢迎继续贡献优秀课程与经验材料。");
-  lines.push("课程涉及敏感信息，如需针对性推送观看，请咨询何亮亮 llhe11");
   return lines.join("\n");
 }
 
@@ -1461,118 +1502,18 @@ async function loadDefaultData() {
   return res.text();
 }
 
-function ensureXlsx() {
-  if (window.XLSX) return Promise.resolve();
-  return new Promise((resolve, reject) => {
-    document.querySelector("script[data-xlsx-loader]")?.remove();
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.mini.min.js";
-    script.dataset.xlsxLoader = "true";
-    script.onload = resolve;
-    script.onerror = () => reject(new Error("Excel 解析组件加载失败"));
-    document.head.appendChild(script);
-  });
-}
-
-async function parseExcelBuffer(buffer) {
-  await ensureXlsx();
-  if (!window.XLSX) throw new Error("Excel 解析组件未成功加载，请检查网络后重试，或先导出 CSV 上传。");
-  const workbook = XLSX.read(buffer, { type: "array", cellDates: true });
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  return XLSX.utils.sheet_to_json(sheet, { defval: "", raw: false });
-}
-
-function decodeCsvBuffer(buffer) {
-  const decoders = [
-    new TextDecoder("utf-8", { fatal: true }),
-    new TextDecoder("gb18030"),
-  ];
-  for (const decoder of decoders) {
-    try {
-      return decoder.decode(buffer);
-    } catch {
-      continue;
-    }
-  }
-  return new TextDecoder().decode(buffer);
-}
 
 async function boot() {
-  let defaultText;
-  let sourceName = "默认数据";
-  // Try GitHub first
   try {
-    defaultText = await loadDefaultData();
-  } catch {
-    // Fallback to localStorage
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      defaultText = saved;
-      sourceName = "本地缓存";
-    } else {
-      els.emptyState.textContent = "数据加载失败，请检查网络连接。";
-      els.emptyState.classList.add("visible");
-      return;
-    }
-  }
-  const parsedRows = parseCsv(defaultText);
-  courses = cleanRows(parsedRows);
-  renderAll(sourceName);
-}
-
-els.csvInput.addEventListener("change", async (event) => {
-  try {
-    const file = event.target.files[0];
-    if (!file) return;
-    setUploadStatus(`正在导入：${file.name} ...`);
-    const buffer = await file.arrayBuffer();
-    const isExcel = /\.(xlsx|xls)$/i.test(file.name);
-    const text = isExcel ? "" : decodeCsvBuffer(buffer);
-    const parsed = isExcel ? await parseExcelBuffer(buffer) : parseCsv(text);
-    const missing = REQUIRED_COLUMNS.filter((column) => !Object.prototype.hasOwnProperty.call(parsed[0] || {}, column));
-    if (missing.length) {
-      throw new Error(`导入文件缺少字段：${missing.join("、")}`);
-    }
-    const rows = cleanRows(parsed);
-    if (!rows.length) {
-      throw new Error("没有识别到有效课程，请检查课程名称和课程链接是否为空。");
-    }
-    const beforeCount = courses.length;
-    const beforeKeys = new Set(courses.map(courseIdentity));
-    const incomingKeys = new Set(rows.map(courseIdentity));
-    const updatedCount = [...incomingKeys].filter((key) => beforeKeys.has(key)).length;
-    courses = mergeCourseRows(courses, parsed);
-    const addedCount = Math.max(0, courses.length - beforeCount);
-    selectedCourseIds = new Set();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ type: "merged-json", rows: courses.map(stripRuntimeFields) }));
-    localStorage.setItem(STORAGE_NAME_KEY, `已合并：${file.name}`);
-    renderAll(`已合并：${file.name}`);
-    setUploadStatus(`导入成功！${file.name}：新增 ${addedCount} 门，更新 ${updatedCount} 门，当前共 ${courses.length} 门。`);
+    const defaultText = await loadDefaultData();
+    courses = cleanRows(parseCsv(defaultText));
+    renderAll("默认数据");
   } catch (error) {
     console.error(error);
-    setUploadStatus(error.message || "导入失败，请检查文件格式。", "error");
-  } finally {
-    event.target.value = "";
+    els.emptyState.textContent = "数据加载失败，请检查 courses.csv 文件或网络连接。";
+    els.emptyState.classList.add("visible");
   }
-});
-
-els.resetData.addEventListener("click", async () => {
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(STORAGE_NAME_KEY);
-  selectedCourseIds = new Set();
-  try {
-    courses = cleanRows(parseCsv(await loadDefaultData()));
-    renderAll("默认数据");
-    setUploadStatus(`已恢复默认数据，共 ${courses.length} 门课程。`);
-  } catch {
-    setUploadStatus("恢复失败，请检查网络连接。", "error");
-  }
-});
-
-els.unlockUpload.addEventListener("click", unlockMaintenance);
-els.adminPassword.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") unlockMaintenance();
-});
+}
 
 els.copyShareList.addEventListener("click", async () => {
   if (!selectedCourseIds.size) {
@@ -1616,8 +1557,22 @@ els.courseRows.addEventListener("click", async (event) => {
 });
 
 [els.searchInput, els.typeFilter, els.deptFilter, els.monthFilter, els.sortSelect].forEach((control) => {
-  control.addEventListener("input", renderCourses);
-  control.addEventListener("change", renderCourses);
+  const updateFilter = () => {
+    currentPage = 1;
+    renderCourses();
+  };
+  control.addEventListener("input", updateFilter);
+  control.addEventListener("change", updateFilter);
+});
+
+els.prevPage.addEventListener("click", () => {
+  currentPage = Math.max(1, currentPage - 1);
+  renderCourses();
+});
+
+els.nextPage.addEventListener("click", () => {
+  currentPage += 1;
+  renderCourses();
 });
 
 boot().catch((error) => {
