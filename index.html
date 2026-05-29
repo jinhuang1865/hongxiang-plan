@@ -549,6 +549,18 @@ select {
   font-size: 13px;
 }
 
+.upload-status {
+  min-height: 20px;
+  margin: -2px 0 0;
+  color: var(--brand-dark);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.upload-status.error {
+  color: var(--red);
+}
+
 .upload-actions {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) 140px;
@@ -948,6 +960,7 @@ td {
               </label>
               <button class="ghost-button" id="resetData" type="button">恢复默认数据</button>
             </div>
+            <p class="upload-status" id="uploadStatus"></p>
             <p class="hint">模板字段：课程名称、课程类型、课程介绍、课程链接、二级部门、课程属性、授课日期。</p>
           </div>
         </details>
@@ -997,6 +1010,7 @@ const els = {
   passwordPanel: document.querySelector("#passwordPanel"),
   passwordError: document.querySelector("#passwordError"),
   uploadActions: document.querySelector("#uploadActions"),
+  uploadStatus: document.querySelector("#uploadStatus"),
   dataSource: document.querySelector("#dataSource"),
   latestMonth: document.querySelector("#latestMonth"),
   totalCourses: document.querySelector("#totalCourses"),
@@ -1217,7 +1231,7 @@ function renderThanks(latestDate) {
 function renderActionPanel(latestMonth) {
   const monthlyItems = courses.filter((item) => item.month === latestMonth).sort((a, b) => (b.date || 0) - (a.date || 0));
   const recommended = pickRecommendedCourses(monthlyItems.length ? monthlyItems : courses);
-  els.actionMonth.textContent = latestMonth && latestMonth !== "--" ? `${latestMonth} 行动建议` : "行动建议";
+  els.actionMonth.textContent = latestMonth && latestMonth !== "--" ? `${latestMonth} 推荐` : "课程推荐";
   els.newCourseCount.textContent = `${monthlyItems.length} 门`;
   els.newCourseList.innerHTML = renderMiniList(monthlyItems.slice(0, 5), "暂无本月新增课程。");
   els.recommendList.innerHTML = renderMiniList(recommended, "暂无可推荐课程。");
@@ -1265,6 +1279,11 @@ function unlockMaintenance() {
   els.passwordError.textContent = "";
   els.passwordPanel.style.display = "none";
   els.uploadActions.classList.remove("locked");
+}
+
+function setUploadStatus(message, type = "info") {
+  els.uploadStatus.textContent = message;
+  els.uploadStatus.classList.toggle("error", type === "error");
 }
 
 function rankingByDepartment(items) {
@@ -1465,24 +1484,34 @@ async function boot() {
 }
 
 els.csvInput.addEventListener("change", async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-  const buffer = await file.arrayBuffer();
-  const isExcel = /\.(xlsx|xls)$/i.test(file.name);
-  const text = isExcel ? "" : decodeCsvBuffer(buffer);
-  const parsed = isExcel ? await parseExcelBuffer(buffer) : parseCsv(text);
-  const rows = cleanRows(parsed);
-  const missing = REQUIRED_COLUMNS.filter((column) => !Object.prototype.hasOwnProperty.call(parsed[0] || {}, column));
-  if (missing.length) {
-    alert(`导入文件缺少字段：${missing.join("、")}`);
-    return;
+  try {
+    const file = event.target.files[0];
+    if (!file) return;
+    setUploadStatus(`正在导入：${file.name} ...`);
+    const buffer = await file.arrayBuffer();
+    const isExcel = /\.(xlsx|xls)$/i.test(file.name);
+    const text = isExcel ? "" : decodeCsvBuffer(buffer);
+    const parsed = isExcel ? await parseExcelBuffer(buffer) : parseCsv(text);
+    const missing = REQUIRED_COLUMNS.filter((column) => !Object.prototype.hasOwnProperty.call(parsed[0] || {}, column));
+    if (missing.length) {
+      throw new Error(`导入文件缺少字段：${missing.join("、")}`);
+    }
+    const rows = cleanRows(parsed);
+    if (!rows.length) {
+      throw new Error("没有识别到有效课程，请检查课程名称和课程链接是否为空。");
+    }
+    selectedCourseIds = new Set();
+    courses = rows;
+    localStorage.setItem(STORAGE_KEY, isExcel ? JSON.stringify({ type: "xlsx-json", rows: parsed }) : text);
+    localStorage.setItem(STORAGE_NAME_KEY, file.name);
+    renderAll(file.name);
+    setUploadStatus(`导入成功：${file.name}，已更新 ${rows.length} 门课程。`);
+  } catch (error) {
+    console.error(error);
+    setUploadStatus(error.message || "导入失败，请检查文件格式。", "error");
+  } finally {
+    event.target.value = "";
   }
-  selectedCourseIds = new Set();
-  courses = rows;
-  localStorage.setItem(STORAGE_KEY, isExcel ? JSON.stringify({ type: "xlsx-json", rows: parsed }) : text);
-  localStorage.setItem(STORAGE_NAME_KEY, file.name);
-  renderAll(file.name);
-  event.target.value = "";
 });
 
 els.resetData.addEventListener("click", async () => {
@@ -1491,6 +1520,7 @@ els.resetData.addEventListener("click", async () => {
   selectedCourseIds = new Set();
   courses = cleanRows(parseCsv(await loadDefaultData()));
   renderAll("默认数据");
+  setUploadStatus(`已恢复默认数据，共 ${courses.length} 门课程。`);
 });
 
 els.unlockUpload.addEventListener("click", unlockMaintenance);
