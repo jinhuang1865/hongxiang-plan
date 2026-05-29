@@ -330,9 +330,16 @@ select {
 
 .mini-title {
   overflow: hidden;
+  color: var(--text);
   font-weight: 800;
+  text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.mini-title:hover {
+  color: var(--brand);
+  text-decoration: underline;
 }
 
 .mini-meta {
@@ -905,10 +912,6 @@ td {
               <select id="deptFilter"></select>
             </label>
             <label>
-              <span>人群</span>
-              <select id="audienceFilter"></select>
-            </label>
-            <label>
               <span>月份</span>
               <select id="monthFilter"></select>
             </label>
@@ -1000,8 +1003,6 @@ const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课�
 const OPTIONAL_COLUMNS = ["课程属性"];
 const STORAGE_KEY = "hongxiang-plan-csv";
 const STORAGE_NAME_KEY = "hongxiang-plan-csv-name";
-const AUDIENCE_OPTIONS = ["全员", "管理者", "产品", "研发技术", "运营服务", "教学教研", "AI提效"];
-
 const els = {
   csvInput: document.querySelector("#csvInput"),
   resetData: document.querySelector("#resetData"),
@@ -1038,7 +1039,6 @@ const els = {
   searchInput: document.querySelector("#searchInput"),
   typeFilter: document.querySelector("#typeFilter"),
   deptFilter: document.querySelector("#deptFilter"),
-  audienceFilter: document.querySelector("#audienceFilter"),
   monthFilter: document.querySelector("#monthFilter"),
   sortSelect: document.querySelector("#sortSelect"),
   courseRows: document.querySelector("#courseRows"),
@@ -1102,21 +1102,8 @@ function normalizeCourse(row) {
   });
   item.date = parseDate(item["授课日期"]);
   item.month = item.date ? formatMonth(item.date) : "未标日期";
-  item.audiences = inferAudiences(item);
   item.isFeatured = String(item["课程属性"] || "").includes("精品课程");
   return item;
-}
-
-function inferAudiences(item) {
-  const text = `${item["课程名称"]} ${item["课程类型"]} ${item["课程介绍"]}`.toLowerCase();
-  const audiences = new Set(["全员"]);
-  if (text.includes("领导") || text.includes("管理") || text.includes("团队")) audiences.add("管理者");
-  if (text.includes("产品") || text.includes("pm") || text.includes("方案")) audiences.add("产品");
-  if (text.includes("研发") || text.includes("技术") || text.includes("平台") || text.includes("运维") || text.includes("agent")) audiences.add("研发技术");
-  if (text.includes("运营") || text.includes("服务") || text.includes("交付") || text.includes("回访") || text.includes("售卖")) audiences.add("运营服务");
-  if (text.includes("教学") || text.includes("教研") || text.includes("讲题") || text.includes("板书") || text.includes("学员")) audiences.add("教学教研");
-  if (text.includes("ai") || text.includes("aigc") || text.includes("claude") || text.includes("openclaw") || text.includes("提效") || text.includes("cc")) audiences.add("AI提效");
-  return [...audiences];
 }
 
 function parseDate(value) {
@@ -1181,7 +1168,6 @@ function renderAll(sourceName = "默认数据") {
 
   setOptions(els.typeFilter, uniqueValues(courses, "课程类型"), "全部类型");
   setOptions(els.deptFilter, uniqueValues(courses, "二级部门"), "全部部门");
-  setOptions(els.audienceFilter, AUDIENCE_OPTIONS, "全部人群");
   setOptions(els.monthFilter, uniqueValues(courses, "month").reverse(), "全部月份");
 
   renderChart(els.typeChart, countBy(courses, "课程类型"));
@@ -1262,7 +1248,7 @@ function renderMiniList(items, emptyText) {
     .map((item) => {
       return `
         <div class="mini-item">
-          <div class="mini-title" title="${escapeHtml(item["课程名称"])}">${escapeHtml(item["课程名称"])}</div>
+          <a class="mini-title" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener" title="${escapeHtml(item["课程名称"])}">${escapeHtml(item["课程名称"])}</a>
           <div class="mini-meta">${escapeHtml(item["课程类型"] || "未标注")} · ${escapeHtml(item["二级部门"] || "未标注")} · ${formatDate(item.date)}${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}</div>
         </div>
       `;
@@ -1322,7 +1308,6 @@ function renderCourses() {
   const keyword = els.searchInput.value.trim().toLowerCase();
   const type = els.typeFilter.value;
   const dept = els.deptFilter.value;
-  const audience = els.audienceFilter.value;
   const month = els.monthFilter.value;
   const sort = els.sortSelect.value;
 
@@ -1332,7 +1317,6 @@ function renderCourses() {
       (!keyword || haystack.includes(keyword)) &&
       (!type || item["课程类型"] === type) &&
       (!dept || item["二级部门"] === dept) &&
-      (!audience || item.audiences.includes(audience)) &&
       (!month || item.month === month)
     );
   });
@@ -1391,7 +1375,6 @@ function renderSelectedList() {
 function buildCourseCopy(item) {
   return [
     `推荐学习：《${item["课程名称"]}》`,
-    `适合人群：${item.audiences.filter((name) => name !== "全员").join("、") || "全员"}`,
     `推荐理由：${item["课程介绍"]}`,
     `课程链接：${item["课程链接"]}`,
   ].join("\n");
@@ -1447,6 +1430,27 @@ function escapeAttribute(value) {
 
 async function loadDefaultData() {
   return EMBEDDED_CSV;
+}
+
+function ensureXlsx() {
+  if (window.XLSX) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    document.querySelector("script[data-xlsx-loader]")?.remove();
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.mini.min.js";
+    script.dataset.xlsxLoader = "true";
+    script.onload = resolve;
+    script.onerror = () => reject(new Error("Excel 解析组件加载失败"));
+    document.head.appendChild(script);
+  });
+}
+
+async function parseExcelBuffer(buffer) {
+  await ensureXlsx();
+  if (!window.XLSX) throw new Error("Excel 解析组件未成功加载，请检查网络后重试，或先导出 CSV 上传。");
+  const workbook = XLSX.read(buffer, { type: "array", cellDates: true });
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  return XLSX.utils.sheet_to_json(sheet, { defval: "", raw: false });
 }
 
 function decodeCsvBuffer(buffer) {
@@ -1569,7 +1573,7 @@ els.courseRows.addEventListener("click", async (event) => {
   }, 1600);
 });
 
-[els.searchInput, els.typeFilter, els.deptFilter, els.audienceFilter, els.monthFilter, els.sortSelect].forEach((control) => {
+[els.searchInput, els.typeFilter, els.deptFilter, els.monthFilter, els.sortSelect].forEach((control) => {
   control.addEventListener("input", renderCourses);
   control.addEventListener("change", renderCourses);
 });
