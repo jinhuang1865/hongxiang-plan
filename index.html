@@ -71,6 +71,11 @@ button:active {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 286px minmax(0, 1fr);
+  transition: grid-template-columns 0.3s ease;
+}
+
+.app.collapsed {
+  grid-template-columns: 64px minmax(0, 1fr);
 }
 
 .sidebar {
@@ -84,6 +89,40 @@ button:active {
   color: #f2f8f7;
   background: linear-gradient(180deg, #123430 0%, #184a44 40%, #0f2e2b 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  transition: padding 0.3s ease, gap 0.3s ease;
+}
+
+.app.collapsed .sidebar {
+  padding: 24px 12px;
+  gap: 16px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), right 0.3s ease;
+  z-index: 1;
+}
+
+.sidebar-toggle:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.app.collapsed .sidebar-toggle {
+  right: 18px;
 }
 
 .brand {
@@ -111,6 +150,17 @@ button:active {
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.brand-text {
+  transition: opacity 0.2s ease, max-width 0.2s ease;
+}
+
+.app.collapsed .brand-text {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .brand p,
@@ -134,6 +184,25 @@ button:active {
   font-size: 14px;
   font-weight: 600;
   transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.nav-label {
+  transition: opacity 0.15s ease;
+}
+
+.app.collapsed .nav-label {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav a.active {
@@ -796,6 +865,9 @@ tr:hover td {
 }
 
 @media (max-width: 1040px) {
+  .sidebar-toggle { display: none; }
+  .app.collapsed { grid-template-columns: 1fr; }
+
   .app {
     grid-template-columns: 1fr;
   }
@@ -846,18 +918,19 @@ tr:hover td {
   <body>
     <div class="app">
       <aside class="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle" title="收起菜单" aria-label="收起菜单">◀</button>
         <div class="brand">
           <div class="brand-mark">鸿</div>
-          <div>
+          <div class="brand-text">
             <h1>鸿享计划</h1>
             <p>鸿享知识库</p>
           </div>
         </div>
 
         <nav class="nav" aria-label="页面导航">
-          <a href="#overview" class="active">总览</a>
-          <a href="#resources">课程资源</a>
-          <a href="#thanks">感谢致敬</a>
+          <a href="#overview" class="active"><span class="nav-icon">📊</span><span class="nav-label">总览</span></a>
+          <a href="#resources"><span class="nav-icon">📚</span><span class="nav-label">课程资源</span></a>
+          <a href="#thanks"><span class="nav-icon">🙏</span><span class="nav-label">感谢致敬</span></a>
         </nav>
       </aside>
 
@@ -1574,6 +1647,15 @@ boot().catch((error) => {
   console.error(error);
   els.emptyState.textContent = "数据加载失败，请检查 CSV 文件。";
   els.emptyState.classList.add("visible");
+});
+
+// Sidebar toggle
+const appEl = document.querySelector(".app");
+const toggleBtn = document.getElementById("sidebarToggle");
+toggleBtn.addEventListener("click", () => {
+  const collapsed = appEl.classList.toggle("collapsed");
+  toggleBtn.textContent = collapsed ? "▶" : "◀";
+  toggleBtn.title = collapsed ? "展开菜单" : "收起菜单";
 });
 
     </script>
