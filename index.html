@@ -456,13 +456,14 @@ button:active {
   display: inline-flex;
   align-items: center;
   min-height: 22px;
-  margin-left: 6px;
+  margin-left: 8px;
   padding: 2px 10px;
   border-radius: 999px;
   color: #8b6210;
   background: linear-gradient(135deg, #fff0c7, #ffe8a3);
   font-size: 12px;
   font-weight: 800;
+  flex-shrink: 0;
 }
 
 .featured-definition {
@@ -663,7 +664,7 @@ button:active {
 
 .toolbar {
   display: grid;
-  grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(120px, 0.75fr));
+  grid-template-columns: minmax(220px, 1.35fr) repeat(5, minmax(110px, 0.7fr));
   gap: 12px;
   padding: 0 22px 18px;
 }
@@ -864,6 +865,85 @@ tr:hover td {
   display: block;
 }
 
+.course-cards {
+  display: none;
+}
+
+.course-card {
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.course-card:last-child {
+  border-bottom: 0;
+}
+
+.course-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.course-card-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.course-card-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+}
+
+.course-card .course-title {
+  margin-bottom: 8px;
+}
+
+.course-card .course-desc {
+  margin-bottom: 10px;
+  max-width: 100%;
+}
+
+.course-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.course-card .row-actions {
+  justify-content: flex-start;
+}
+
+.view-all-new {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  min-height: 36px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-sm);
+  color: var(--brand);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.view-all-new:hover {
+  color: #fff;
+  background: var(--brand);
+}
+
 @media (max-width: 1040px) {
   .sidebar-toggle { display: none; }
   .app.collapsed { grid-template-columns: 1fr; }
@@ -910,6 +990,18 @@ tr:hover td {
   .thanks-grid,
   .toolbar {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .resource-table-wrap,
+  .pagination {
+    display: none;
+  }
+
+  .course-cards {
+    display: block;
+    border-top: 1px solid var(--line);
   }
 }
 
@@ -994,6 +1086,7 @@ tr:hover td {
                 <small id="newCourseCount">0 门</small>
               </div>
               <div class="mini-list" id="newCourseList"></div>
+              <button class="view-all-new" id="viewAllNew" type="button">查看全部本月新增 →</button>
             </article>
             <article class="action-card">
               <div class="section-title">
@@ -1045,6 +1138,13 @@ tr:hover td {
               <select id="monthFilter"></select>
             </label>
             <label>
+              <span>精品</span>
+              <select id="featuredFilter">
+                <option value="">全部课程</option>
+                <option value="1">只看精品课程</option>
+              </select>
+            </label>
+            <label>
               <span>排序</span>
               <select id="sortSelect">
                 <option value="date-desc">最新优先</option>
@@ -1088,7 +1188,8 @@ tr:hover td {
             <span id="pageInfo">第 1 / 1 页</span>
             <button id="nextPage" type="button">下一页</button>
           </div>
-          <div class="empty" id="emptyState">没有匹配的课程。</div>
+          <div class="empty" id="emptyState">没有找到匹配课程，可以减少关键词，或切换课程类型 / 部门 / 月份后再试。</div>
+          <div class="course-cards" id="courseCards"></div>
         </section>
 
         <section class="thanks-section" id="thanks">
@@ -1135,6 +1236,7 @@ const els = {
   actionMonth: document.querySelector("#actionMonth"),
   newCourseCount: document.querySelector("#newCourseCount"),
   newCourseList: document.querySelector("#newCourseList"),
+  viewAllNew: document.querySelector("#viewAllNew"),
   recommendList: document.querySelector("#recommendList"),
   selectedCount: document.querySelector("#selectedCount"),
   selectedPreview: document.querySelector("#selectedPreview"),
@@ -1152,8 +1254,10 @@ const els = {
   typeFilter: document.querySelector("#typeFilter"),
   deptFilter: document.querySelector("#deptFilter"),
   monthFilter: document.querySelector("#monthFilter"),
+  featuredFilter: document.querySelector("#featuredFilter"),
   sortSelect: document.querySelector("#sortSelect"),
   courseRows: document.querySelector("#courseRows"),
+  courseCards: document.querySelector("#courseCards"),
   resultCount: document.querySelector("#resultCount"),
   pagination: document.querySelector("#pagination"),
   pageInfo: document.querySelector("#pageInfo"),
@@ -1393,7 +1497,7 @@ function renderMiniList(items, emptyText) {
       return `
         <div class="mini-item">
           <a class="mini-title" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener" title="${escapeHtml(item["课程名称"])}">${escapeHtml(item["课程名称"])}</a>
-          <div class="mini-meta">${escapeHtml(item["课程类型"] || "未标注")} · ${escapeHtml(item["二级部门"] || "未标注")} · ${formatDate(item.date)}${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}</div>
+          <div class="mini-meta">${escapeHtml(item["课程类型"] || "未标注")} · ${escapeHtml(item["二级部门"] || "未标注")} · ${formatDate(item.date)}${item.isFeatured ? ' · <span class="featured-badge">精品课程</span>' : ""}</div>
         </div>
       `;
     })
@@ -1438,6 +1542,7 @@ function renderCourses() {
   const type = els.typeFilter.value;
   const dept = els.deptFilter.value;
   const month = els.monthFilter.value;
+  const featured = els.featuredFilter.value;
   const sort = els.sortSelect.value;
 
   let filtered = courses.filter((item) => {
@@ -1446,7 +1551,8 @@ function renderCourses() {
       (!keyword || haystack.includes(keyword)) &&
       (!type || item["课程类型"] === type) &&
       (!dept || item["二级部门"] === dept) &&
-      (!month || item.month === month)
+      (!month || item.month === month) &&
+      (!featured || item.isFeatured)
     );
   });
 
@@ -1490,6 +1596,35 @@ function renderCourses() {
             </div>
           </td>
         </tr>
+      `;
+    })
+    .join("");
+
+  els.courseCards.innerHTML = pageItems
+    .map((item) => {
+      return `
+        <div class="course-card">
+          <div class="course-card-head">
+            <label class="course-card-check">
+              <input class="select-course" type="checkbox" data-course-id="${escapeHtml(item.id)}" ${selectedCourseIds.has(item.id) ? "checked" : ""} />
+              <span>选择</span>
+            </label>
+            ${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}
+          </div>
+          <p class="course-title">
+            <a href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">${escapeHtml(item["课程名称"])}</a>
+          </p>
+          <p class="course-desc">${escapeHtml(item["课程介绍"])}</p>
+          <div class="course-card-meta">
+            <span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span>
+            <span>${escapeHtml(item["二级部门"] || "未标注")}</span>
+            <span>${formatDate(item.date)}</span>
+          </div>
+          <div class="row-actions">
+            <a class="open-link" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">查看课程</a>
+            <button class="copy-course" type="button" data-course-id="${escapeHtml(item.id)}">复制推荐语</button>
+          </div>
+        </div>
       `;
     })
     .join("");
@@ -1592,7 +1727,7 @@ els.copyShareList.addEventListener("click", async () => {
     return;
   }
   const ok = await copyText(buildShareList());
-  els.shareCopyStatus.textContent = ok ? "学习清单已复制。" : "复制失败，请手动复制。";
+  els.shareCopyStatus.textContent = ok ? "已复制，可粘贴到群里" : "复制失败，请手动复制。";
   window.setTimeout(() => {
     els.shareCopyStatus.textContent = "";
   }, 2200);
@@ -1604,12 +1739,32 @@ els.clearSelected.addEventListener("click", () => {
   renderCourses();
 });
 
+els.viewAllNew.addEventListener("click", () => {
+  // Get latest month
+  const validDates = courses.map((c) => c.date).filter(Boolean).sort((a, b) => b - a);
+  const latestMonth = validDates.length ? formatMonth(validDates[0]) : "";
+  // Reset filters and set month
+  els.searchInput.value = "";
+  els.typeFilter.value = "";
+  els.deptFilter.value = "";
+  els.monthFilter.value = latestMonth;
+  els.featuredFilter.value = "";
+  currentPage = 1;
+  // Trigger navigation to resources
+  document.querySelector("#resources").scrollIntoView({ behavior: "smooth" });
+  renderCourses();
+});
+
 els.courseRows.addEventListener("click", async (event) => {
   const checkbox = event.target.closest(".select-course");
   if (checkbox) {
     if (checkbox.checked) selectedCourseIds.add(checkbox.dataset.courseId);
     else selectedCourseIds.delete(checkbox.dataset.courseId);
     renderSelectedList();
+    // Also update the card checkboxes
+    document.querySelectorAll(`.select-course[data-course-id="${checkbox.dataset.courseId}"]`).forEach((cb) => {
+      cb.checked = checkbox.checked;
+    });
     return;
   }
 
@@ -1618,13 +1773,35 @@ els.courseRows.addEventListener("click", async (event) => {
   const item = courses.find((course) => course.id === button.dataset.courseId);
   if (!item) return;
   const ok = await copyText(buildCourseCopy(item));
-  button.textContent = ok ? "已复制" : "复制失败";
+  button.textContent = ok ? "已复制，可粘贴到群里" : "复制失败，请手动复制";
   window.setTimeout(() => {
     button.textContent = "复制推荐语";
-  }, 1600);
+  }, 2000);
 });
 
-[els.searchInput, els.typeFilter, els.deptFilter, els.monthFilter, els.sortSelect].forEach((control) => {
+// Same click handler for mobile cards
+els.courseCards.addEventListener("click", async (event) => {
+  const checkbox = event.target.closest(".select-course");
+  if (checkbox) {
+    if (checkbox.checked) selectedCourseIds.add(checkbox.dataset.courseId);
+    else selectedCourseIds.delete(checkbox.dataset.courseId);
+    renderSelectedList();
+    document.querySelectorAll(`.select-course[data-course-id="${checkbox.dataset.courseId}"]`).forEach((cb) => {
+      cb.checked = checkbox.checked;
+    });
+    return;
+  }
+
+  const button = event.target.closest(".copy-course");
+  if (!button) return;
+  const item = courses.find((course) => course.id === button.dataset.courseId);
+  if (!item) return;
+  const ok = await copyText(buildCourseCopy(item));
+  button.textContent = ok ? "已复制，可粘贴到群里" : "复制失败，请手动复制";
+  window.setTimeout(() => { button.textContent = "复制推荐语"; }, 2000);
+});
+
+[els.searchInput, els.typeFilter, els.deptFilter, els.monthFilter, els.featuredFilter, els.sortSelect].forEach((control) => {
   const updateFilter = () => {
     currentPage = 1;
     renderCourses();
