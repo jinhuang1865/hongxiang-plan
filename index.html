@@ -1300,7 +1300,7 @@ function renderActionPanel(latestMonth) {
 }
 
 function pickRecommendedCourses(items) {
-  const priority = ["AI提效类", "领导力类", "运营类", "教学类", "产品类", "研发技术类", "教育素养类"];
+  const priority = ["AI应用类", "产品类", "教育素养类", "研发技术类"];
   const picked = [];
   for (const item of items.filter((course) => course.isFeatured)) {
     if (!picked.includes(item)) picked.push(item);
