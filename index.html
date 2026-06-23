@@ -264,11 +264,30 @@ button:active {
 
 .hero h2 {
   max-width: 780px;
-  margin: 0;
+  margin: 0 0 16px;
   font-size: clamp(26px, 4vw, 42px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.3px;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  background: var(--brand);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+
+.hero-cta:hover {
+  background: var(--brand-dark);
 }
 
 .month-pill {
@@ -629,6 +648,13 @@ button:active {
   font-variant-numeric: tabular-nums;
 }
 
+.thanks-note {
+  margin: 8px 22px 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .resource-section {
   margin-top: 14px;
   overflow: hidden;
@@ -694,6 +720,63 @@ button:active {
   outline: none;
   border-color: var(--brand);
   box-shadow: 0 0 0 3px rgba(26, 107, 99, 0.1);
+}
+
+.toggle-label {
+  display: grid !important;
+  gap: 6px;
+}
+
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--line);
+  position: relative;
+  transition: background 0.25s;
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform 0.25s;
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: var(--brand);
+}
+
+.toggle-switch input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(16px);
+}
+
+.toggle-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
 }
 
 .resource-share-builder {
@@ -873,6 +956,26 @@ tr:hover td {
   display: block;
 }
 
+.clear-filters-btn {
+  display: inline-block;
+  margin-top: 12px;
+  min-height: 36px;
+  padding: 0 20px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-sm);
+  color: var(--brand);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.clear-filters-btn:hover {
+  color: #fff;
+  background: var(--brand);
+}
+
 .course-cards {
   display: none;
 }
@@ -1039,6 +1142,7 @@ tr:hover td {
           <div>
             <p class="eyebrow">HRBP Resource Dashboard</p>
             <h2>把各部门课程材料，沉淀成可检索、可追踪、可复用的资源地图。</h2>
+            <a class="hero-cta" href="#resources">开始找课</a>
           </div>
           <div class="month-pill" id="latestMonth">--</div>
         </header>
@@ -1145,12 +1249,13 @@ tr:hover td {
               <span>月份</span>
               <select id="monthFilter"></select>
             </label>
-            <label>
+            <label class="toggle-label">
               <span>精品</span>
-              <select id="featuredFilter">
-                <option value="">全部课程</option>
-                <option value="1">只看精品课程</option>
-              </select>
+              <label class="toggle-switch">
+                <input type="checkbox" id="featuredFilter" />
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                <span class="toggle-text">只看精品课程</span>
+              </label>
             </label>
             <label>
               <span>排序</span>
@@ -1167,13 +1272,15 @@ tr:hover td {
               <span>已选学习推荐</span>
               <small id="selectedCount">已选 0 门</small>
             </div>
-            <p class="builder-hint">在课程资源里勾选课程后，可生成一段适合一键转发的学习推荐，帮助转岗同事、新员工或新接手业务的伙伴更快找到学习路径、适应岗位需要。</p>
-            <div class="selected-preview" id="selectedPreview">还没有选择课程。</div>
-            <div class="resource-share-actions">
-              <button id="copyShareList" type="button">复制转发清单</button>
-              <button class="plain-button" id="clearSelected" type="button">清空已选</button>
+            <p class="builder-hint" id="shareHint">勾选课程后，可一键生成适合转发的学习推荐。</p>
+            <div class="share-expanded" id="shareExpanded" style="display:none">
+              <div class="selected-preview" id="selectedPreview">还没有选择课程。</div>
+              <div class="resource-share-actions">
+                <button id="copyShareList" type="button">复制转发清单</button>
+                <button class="plain-button" id="clearSelected" type="button">清空已选</button>
+              </div>
+              <p class="copy-status" id="shareCopyStatus"></p>
             </div>
-            <p class="copy-status" id="shareCopyStatus"></p>
           </article>
 
           <div class="resource-table-wrap">
@@ -1197,7 +1304,10 @@ tr:hover td {
             <span id="pageInfo">第 1 / 1 页</span>
             <button id="nextPage" type="button">下一页</button>
           </div>
-          <div class="empty" id="emptyState">没有找到匹配课程，可以减少关键词，或切换课程类型 / 部门 / 月份后再试。</div>
+          <div class="empty" id="emptyState">
+            <p>没有找到匹配课程，可以减少关键词，或切换课程类型 / 部门 / 月份后再试。</p>
+            <button class="clear-filters-btn" id="clearFiltersBtn" type="button">清空筛选</button>
+          </div>
           <div class="course-cards" id="courseCards"></div>
         </section>
 
@@ -1227,6 +1337,7 @@ tr:hover td {
               <div class="ranking-list" id="yearlyRanking"></div>
             </article>
           </div>
+          <p class="thanks-note">按当前课程库中各二级部门贡献课程数量统计。</p>
         </section>
       </main>
     </div>
@@ -1252,6 +1363,8 @@ const els = {
   recommendList: document.querySelector("#recommendList"),
   selectedCount: document.querySelector("#selectedCount"),
   selectedPreview: document.querySelector("#selectedPreview"),
+  shareExpanded: document.querySelector("#shareExpanded"),
+  shareHint: document.querySelector("#shareHint"),
   copyShareList: document.querySelector("#copyShareList"),
   clearSelected: document.querySelector("#clearSelected"),
   shareCopyStatus: document.querySelector("#shareCopyStatus"),
@@ -1554,7 +1667,7 @@ function renderCourses() {
   const type = els.typeFilter.value;
   const dept = els.deptFilter.value;
   const month = els.monthFilter.value;
-  const featured = els.featuredFilter.value;
+  const featured = els.featuredFilter.checked ? "1" : "";
   const sort = els.sortSelect.value;
 
   let filtered = courses.filter((item) => {
@@ -1656,8 +1769,12 @@ function renderSelectedList() {
   els.selectedCount.textContent = `已选 ${selected.length} 门`;
   if (!selected.length) {
     els.selectedPreview.textContent = "还没有选择课程。";
+    els.shareExpanded.style.display = "none";
+    els.shareHint.style.display = "";
     return;
   }
+  els.shareHint.style.display = "none";
+  els.shareExpanded.style.display = "";
   els.selectedPreview.innerHTML = `<ol>${selected.map((item) => `<li>${escapeHtml(item["课程名称"])}</li>`).join("")}</ol>`;
 }
 
@@ -1823,6 +1940,18 @@ els.clearSelected.addEventListener("click", () => {
   renderCourses();
 });
 
+els.clearFiltersBtn = document.querySelector("#clearFiltersBtn");
+els.clearFiltersBtn.addEventListener("click", () => {
+  els.searchInput.value = "";
+  els.typeFilter.value = "";
+  els.deptFilter.value = "";
+  els.monthFilter.value = "";
+  els.featuredFilter.checked = false;
+  els.sortSelect.value = "date-desc";
+  currentPage = 1;
+  renderCourses();
+});
+
 els.viewAllNew.addEventListener("click", () => {
   // Get latest month
   const validDates = courses.map((c) => c.date).filter(Boolean).sort((a, b) => b - a);
@@ -1832,7 +1961,7 @@ els.viewAllNew.addEventListener("click", () => {
   els.typeFilter.value = "";
   els.deptFilter.value = "";
   els.monthFilter.value = latestMonth;
-  els.featuredFilter.value = "";
+  els.featuredFilter.checked = false;
   currentPage = 1;
   // Trigger navigation to resources
   document.querySelector("#resources").scrollIntoView({ behavior: "smooth" });
