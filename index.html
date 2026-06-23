@@ -1232,9 +1232,9 @@ tr:hover td {
     </div>
     <script>
 const CSV_RAW_URL = "./courses.csv";
-const VIEW_BLOB_ID = "019ef37b-b4a9-765e-bd8e-b19193992bbb";
-const VIEW_API_URL = "https://jsonblob.com/api/jsonBlob/" + VIEW_BLOB_ID;
+const VIEW_FILE = "https://raw.githubusercontent.com/jinhuang1865/hongxiang-plan/main/views.json";
 const VIEW_STORAGE_KEY = "hongxiang-views";
+const GH_API_VIEWS = "https://api.github.com/repos/jinhuang1865/hongxiang-plan/contents/views.json";
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
 const els = {
@@ -1727,48 +1727,44 @@ let viewCounts = {};
 
 async function fetchViewCounts() {
   try {
-    const res = await fetch(VIEW_API_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("blob expired");
+    const res = await fetch(VIEW_FILE, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
     return data.views || {};
   } catch (e) {
-    console.warn("View blob fetch failed, trying to recreate...", e.message);
-    // Try to recreate with localStorage backup
+    console.warn("Remote views unavailable, using localStorage fallback:", e.message);
     const backup = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
-    try {
-      const createRes = await fetch("https://jsonblob.com/api/jsonBlob", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ views: backup }),
-      });
-      if (createRes.ok) {
-        const blob = await createRes.json();
-        // Extract new blob ID from Location header
-        const location = createRes.headers.get("Location") || createRes.headers.get("X-jsonblob-id");
-        if (location) {
-          const newId = location.split("/").pop();
-          localStorage.setItem(VIEW_STORAGE_KEY + "-blob-id", newId);
-          console.log("Recreated view blob:", newId);
-        }
-      }
-    } catch (e2) { console.warn("Could not recreate blob:", e2.message); }
-    return backup;
+    return backup.views || backup || {};
   }
 }
 
 async function putViewCounts(counts) {
-  try {
-    const url = "https://jsonblob.com/api/jsonBlob/" + (localStorage.getItem(VIEW_STORAGE_KEY + "-blob-id") || VIEW_BLOB_ID);
-    await fetch(url, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ views: counts }),
-    });
-    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(counts));
-  } catch (e) {
-    console.warn("Failed to save view counts:", e.message);
-    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(counts));
+  const token = localStorage.getItem("gh-view-token");
+  if (!token) {
+    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: counts }));
+    return;
   }
+  try {
+    const res = await fetch(GH_API_VIEWS, { cache: "no-store" });
+    const data = await res.json();
+    const sha = data.sha || "";
+    const body = JSON.stringify({
+      message: "update view counts",
+      content: btoa(unescape(encodeURIComponent(JSON.stringify({ views: counts })))),
+      sha: sha,
+    });
+    await fetch(GH_API_VIEWS, {
+      method: "PUT",
+      headers: {
+        Authorization: "token " + token,
+        "Content-Type": "application/json",
+      },
+      body: body,
+    });
+  } catch (e) {
+    console.warn("GitHub write failed:", e.message);
+  }
+  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: counts }));
 }
 
 function renderViewCounts() {
@@ -1780,14 +1776,10 @@ function renderViewCounts() {
 }
 
 async function initViewCounts() {
-  const backup = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
+  const localData = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
+  const localViews = localData.views || localData || {};
   const remote = await fetchViewCounts();
-  // Merge: remote takes priority, backup fills gaps
-  viewCounts = { ...backup, ...remote };
-  // If remote has values not in backup, save to localStorage
-  if (Object.keys(remote).length > 0) {
-    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(viewCounts));
-  }
+  viewCounts = { ...localViews, ...remote };
   renderViewCounts();
 }
 
@@ -1940,6 +1932,23 @@ toggleBtn.addEventListener("click", () => {
   toggleBtn.textContent = collapsed ? "▶" : "◀";
   toggleBtn.title = collapsed ? "展开菜单" : "收起菜单";
 });
+
+// Token prompt for view counter sync
+(function() {
+  if (localStorage.getItem("gh-view-token")) return;
+  var bar = document.createElement("div");
+  bar.id = "token-bar";
+  bar.innerHTML = '<div style="max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center"><span>🔑 输入同步密钥，让浏览量跨设备共享：</span><input id="tokenInput" type="password" placeholder="粘贴 GitHub Token" style="padding:6px 10px;border:1px solid #ccc;border-radius:4px;width:260px;font-size:13px" /><button id="tokenSave" style="padding:6px 14px;border:0;border-radius:4px;background:#1a6b63;color:#fff;font-weight:700;cursor:pointer;font-size:13px">保存</button><span id="tokenMsg" style="font-size:12px"></span></div>';
+  bar.style.cssText = "position:fixed;bottom:0;left:0;right:0;background:#f0f4f8;border-top:1px solid #d5dde5;padding:10px 16px;z-index:9999;font-size:13px;color:#333;text-align:center;box-shadow:0 -2px 12px rgba(0,0,0,0.06)";
+  document.body.appendChild(bar);
+  document.getElementById("tokenSave").addEventListener("click", function() {
+    var val = document.getElementById("tokenInput").value.trim();
+    if (!val) { document.getElementById("tokenMsg").textContent = "请输入 Token"; return; }
+    localStorage.setItem("gh-view-token", val);
+    bar.style.display = "none";
+    console.log("Token saved. Views will sync to GitHub.");
+  });
+})();
 
     </script>
   </body>
