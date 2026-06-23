@@ -1724,7 +1724,6 @@ async function loadDefaultData() {
 
 
 let viewCounts = {};
-let viewedThisSession = new Set();
 
 async function fetchViewCounts() {
   try {
@@ -1793,8 +1792,6 @@ async function initViewCounts() {
 }
 
 async function incrementView(courseId) {
-  if (viewedThisSession.has(courseId)) return;
-  viewedThisSession.add(courseId);
   viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
   renderViewCounts();
   await putViewCounts(viewCounts);
