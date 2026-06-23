@@ -779,6 +779,14 @@ tr:hover td {
   width: 54px;
 }
 
+.view-count {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .select-course {
   width: 18px;
   height: 18px;
@@ -1177,6 +1185,7 @@ tr:hover td {
                   <th>类型</th>
                   <th>二级部门</th>
                   <th>授课日期</th>
+                  <th>浏览</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -1223,6 +1232,9 @@ tr:hover td {
     </div>
     <script>
 const CSV_RAW_URL = "./courses.csv";
+const VIEW_BLOB_ID = "019ef37b-b4a9-765e-bd8e-b19193992bbb";
+const VIEW_API_URL = "https://jsonblob.com/api/jsonBlob/" + VIEW_BLOB_ID;
+const VIEW_STORAGE_KEY = "hongxiang-views";
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
 const els = {
@@ -1589,6 +1601,7 @@ function renderCourses() {
           <td><span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span></td>
           <td>${escapeHtml(item["二级部门"] || "未标注")}</td>
           <td>${formatDate(item.date)}</td>
+          <td><span class="view-count" id="vc-${escapeHtml(item.id)}">--</span></td>
           <td>
             <div class="row-actions">
               <a class="open-link" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">查看课程</a>
@@ -1619,6 +1632,7 @@ function renderCourses() {
             <span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span>
             <span>${escapeHtml(item["二级部门"] || "未标注")}</span>
             <span>${formatDate(item.date)}</span>
+            <span class="view-count" style="color:var(--brand-dark);font-weight:700;" id="vc-${escapeHtml(item.id)}">--</span>
           </div>
           <div class="row-actions">
             <a class="open-link" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">查看课程</a>
@@ -1628,6 +1642,9 @@ function renderCourses() {
       `;
     })
     .join("");
+
+  // Refresh view count displays after DOM update
+  renderViewCounts();
 }
 
 function getSelectedCourses() {
@@ -1706,11 +1723,89 @@ async function loadDefaultData() {
 }
 
 
+let viewCounts = {};
+let viewedThisSession = new Set();
+
+async function fetchViewCounts() {
+  try {
+    const res = await fetch(VIEW_API_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("blob expired");
+    const data = await res.json();
+    return data.views || {};
+  } catch (e) {
+    console.warn("View blob fetch failed, trying to recreate...", e.message);
+    // Try to recreate with localStorage backup
+    const backup = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
+    try {
+      const createRes = await fetch("https://jsonblob.com/api/jsonBlob", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ views: backup }),
+      });
+      if (createRes.ok) {
+        const blob = await createRes.json();
+        // Extract new blob ID from Location header
+        const location = createRes.headers.get("Location") || createRes.headers.get("X-jsonblob-id");
+        if (location) {
+          const newId = location.split("/").pop();
+          localStorage.setItem(VIEW_STORAGE_KEY + "-blob-id", newId);
+          console.log("Recreated view blob:", newId);
+        }
+      }
+    } catch (e2) { console.warn("Could not recreate blob:", e2.message); }
+    return backup;
+  }
+}
+
+async function putViewCounts(counts) {
+  try {
+    const url = "https://jsonblob.com/api/jsonBlob/" + (localStorage.getItem(VIEW_STORAGE_KEY + "-blob-id") || VIEW_BLOB_ID);
+    await fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ views: counts }),
+    });
+    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(counts));
+  } catch (e) {
+    console.warn("Failed to save view counts:", e.message);
+    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(counts));
+  }
+}
+
+function renderViewCounts() {
+  document.querySelectorAll("[id^='vc-']").forEach((el) => {
+    const courseId = el.id.replace("vc-", "");
+    const count = viewCounts[courseId] || 0;
+    el.textContent = count + " 次";
+  });
+}
+
+async function initViewCounts() {
+  const backup = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
+  const remote = await fetchViewCounts();
+  // Merge: remote takes priority, backup fills gaps
+  viewCounts = { ...backup, ...remote };
+  // If remote has values not in backup, save to localStorage
+  if (Object.keys(remote).length > 0) {
+    localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(viewCounts));
+  }
+  renderViewCounts();
+}
+
+async function incrementView(courseId) {
+  if (viewedThisSession.has(courseId)) return;
+  viewedThisSession.add(courseId);
+  viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
+  renderViewCounts();
+  await putViewCounts(viewCounts);
+}
+
 async function boot() {
   try {
     const defaultText = await loadDefaultData();
     courses = cleanRows(parseCsv(defaultText));
     renderAll("默认数据");
+    initViewCounts();
   } catch (error) {
     console.error(error);
     els.emptyState.textContent = "数据加载失败，请检查 courses.csv 文件或网络连接。";
@@ -1818,6 +1913,20 @@ els.prevPage.addEventListener("click", () => {
 els.nextPage.addEventListener("click", () => {
   currentPage += 1;
   renderCourses();
+});
+
+// Global view counter: increment when course link is clicked
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a[href]");
+  if (!link) return;
+  // Check if this is a course link (has a parent with course-id in checkboxes)
+  const row = link.closest("tr");
+  const card = link.closest(".course-card");
+  const container = row || card;
+  if (!container) return;
+  const checkbox = container.querySelector(".select-course");
+  if (!checkbox) return;
+  incrementView(checkbox.dataset.courseId);
 });
 
 boot().catch((error) => {
