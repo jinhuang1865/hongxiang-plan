@@ -2042,13 +2042,13 @@ els.nextPage.addEventListener("click", () => {
 document.addEventListener("click", (event) => {
   const link = event.target.closest("a[href]");
   if (!link) return;
-  // Check if this is a course link (has a parent with course-id in checkboxes)
   const row = link.closest("tr");
   const card = link.closest(".course-card");
   const container = row || card;
   if (!container) return;
   const checkbox = container.querySelector(".select-course");
   if (!checkbox) return;
+  console.log("[浏览量] 点击链接, courseId=", checkbox.dataset.courseId);
   incrementView(checkbox.dataset.courseId);
 });
 
