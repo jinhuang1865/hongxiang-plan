@@ -1854,25 +1854,6 @@ async function fetchViewCounts() {
   }
 }
 
-async function putViewCounts(counts) {
-  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: counts }));
-  // Push increments to Cloudflare Worker
-  const localOld = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY + "-prev") || "{}");
-  for (const [courseId, count] of Object.entries(counts)) {
-    const prev = localOld[courseId] || 0;
-    if (count > prev) {
-      try {
-        await fetch(VIEW_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: courseId }),
-        });
-      } catch (e) { /* ignore write errors */ }
-    }
-  }
-  localStorage.setItem(VIEW_STORAGE_KEY + "-prev", JSON.stringify(counts));
-}
-
 function renderViewCounts() {
   document.querySelectorAll("[id^='vc-']").forEach((el) => {
     const courseId = el.id.replace("vc-", "");
@@ -1882,18 +1863,25 @@ function renderViewCounts() {
 }
 
 async function initViewCounts() {
-  const localData = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
-  const localViews = localData.views || localData || {};
   const remote = await fetchViewCounts();
-  viewCounts = { ...localViews, ...remote };
-  localStorage.setItem(VIEW_STORAGE_KEY + "-prev", JSON.stringify(viewCounts));
+  viewCounts = remote;
+  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: viewCounts }));
   renderViewCounts();
 }
 
 async function incrementView(courseId) {
   viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
   renderViewCounts();
-  await putViewCounts(viewCounts);
+  // Directly POST increment to Worker (no diff logic)
+  try {
+    await fetch(VIEW_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: courseId }),
+    });
+  } catch (e) {
+    console.warn("View increment failed:", e.message);
+  }
 }
 
 async function boot() {
