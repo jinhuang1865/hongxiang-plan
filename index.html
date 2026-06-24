@@ -1848,9 +1848,16 @@ async function fetchViewCounts() {
     const data = await res.json();
     return data.views || {};
   } catch (e) {
-    console.warn("Remote views unavailable, using localStorage:", e.message);
-    const backup = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
-    return backup.views || backup || {};
+    return null;
+  }
+}
+
+function getLocalCounts() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
+    return raw.views || raw || {};
+  } catch (e) {
+    return {};
   }
 }
 
@@ -1862,17 +1869,29 @@ function renderViewCounts() {
   });
 }
 
+function saveLocalCounts() {
+  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: viewCounts }));
+}
+
 async function initViewCounts() {
   const remote = await fetchViewCounts();
-  viewCounts = remote;
-  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: viewCounts }));
+  const local = getLocalCounts();
+  if (remote) {
+    // Remote available: merge with local (remote wins, local fills gaps)
+    viewCounts = { ...local, ...remote };
+  } else {
+    // Worker unreachable: use localStorage only
+    viewCounts = local;
+  }
+  saveLocalCounts();
   renderViewCounts();
 }
 
 async function incrementView(courseId) {
   viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
+  saveLocalCounts();
   renderViewCounts();
-  // Directly POST increment to Worker (no diff logic)
+  // POST to Worker for cross-device sync
   try {
     await fetch(VIEW_API, {
       method: "POST",
@@ -1880,7 +1899,7 @@ async function incrementView(courseId) {
       body: JSON.stringify({ id: courseId }),
     });
   } catch (e) {
-    console.warn("View increment failed:", e.message);
+    console.warn("View increment sync failed:", e.message);
   }
 }
 
