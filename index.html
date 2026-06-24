@@ -1846,8 +1846,10 @@ async function fetchViewCounts() {
     const res = await fetch(VIEW_API, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
+    console.log("[浏览量] 远程读取成功:", JSON.stringify(data.views).slice(0, 80));
     return data.views || {};
   } catch (e) {
+    console.warn("[浏览量] 远程读取失败:", e.message);
     return null;
   }
 }
@@ -1862,7 +1864,9 @@ function getLocalCounts() {
 }
 
 function renderViewCounts() {
-  document.querySelectorAll("[id^='vc-']").forEach((el) => {
+  const els = document.querySelectorAll("[id^='vc-']");
+  console.log("[浏览量] 渲染 " + els.length + " 个课程视图");
+  els.forEach((el) => {
     const courseId = el.id.replace("vc-", "");
     const count = viewCounts[courseId] || 0;
     el.textContent = count + " 次";
@@ -1874,32 +1878,36 @@ function saveLocalCounts() {
 }
 
 async function initViewCounts() {
+  console.log("[浏览量] 初始化开始...");
   const remote = await fetchViewCounts();
   const local = getLocalCounts();
+  console.log("[浏览量] 本地数据:", JSON.stringify(local).slice(0, 80));
   if (remote) {
-    // Remote available: merge with local (remote wins, local fills gaps)
     viewCounts = { ...local, ...remote };
+    console.log("[浏览量] 合并后:", JSON.stringify(viewCounts).slice(0, 80));
   } else {
-    // Worker unreachable: use localStorage only
     viewCounts = local;
+    console.warn("[浏览量] 使用本地数据(Worker不可达)");
   }
   saveLocalCounts();
   renderViewCounts();
 }
 
 async function incrementView(courseId) {
+  console.log("[浏览量] 点击:", courseId);
   viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
   saveLocalCounts();
   renderViewCounts();
-  // POST to Worker for cross-device sync
   try {
-    await fetch(VIEW_API, {
+    const res = await fetch(VIEW_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: courseId }),
     });
+    const result = await res.json();
+    console.log("[浏览量] 同步成功:", result);
   } catch (e) {
-    console.warn("View increment sync failed:", e.message);
+    console.error("[浏览量] 同步失败:", e.message);
   }
 }
 
