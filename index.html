@@ -1117,6 +1117,7 @@ tr:hover td {
 }
 
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <div class="app">
@@ -1343,8 +1344,9 @@ tr:hover td {
     </div>
     <script>
 const CSV_RAW_URL = "./courses.csv";
-const VIEW_API = "https://hongxiang-plan.streamlit.app/";
-const VIEW_STORAGE_KEY = "hongxiang-views";
+const SUPABASE_URL = "https://lwadtuhvpnnjxrpgyylf.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_6FBUVci7Hb6hjl16vR5gkw_29LkU1-w";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
 const els = {
@@ -1713,7 +1715,7 @@ function renderCourses() {
           <td><span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span></td>
           <td>${escapeHtml(item["二级部门"] || "未标注")}</td>
           <td>${formatDate(item.date)}</td>
-          <td><span class="view-count" id="vc-${escapeHtml(item.id)}">--</span></td>
+          <td><span class="view-count" id="vc-${escapeHtml(item.id)}" data-course-id="${escapeAttribute(getCourseId(item))}">浏览 -- 次</span></td>
           <td>
             <div class="row-actions">
               <a class="open-link" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">查看课程</a>
@@ -1744,7 +1746,7 @@ function renderCourses() {
             <span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span>
             <span>${escapeHtml(item["二级部门"] || "未标注")}</span>
             <span>${formatDate(item.date)}</span>
-            <span class="view-count" style="color:var(--brand-dark);font-weight:700;" id="vc-${escapeHtml(item.id)}">--</span>
+            <span class="view-count" style="color:var(--brand-dark);font-weight:700;" id="vc-${escapeHtml(item.id)}" data-course-id="${escapeAttribute(getCourseId(item))}">浏览 -- 次</span>
           </div>
           <div class="row-actions">
             <a class="open-link" href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">查看课程</a>
@@ -1839,78 +1841,60 @@ async function loadDefaultData() {
 }
 
 
-let viewCounts = {};
+// ── 浏览量：Supabase 共享存储 ──────────────────────────
+let viewsMap = {};
 
-async function fetchViewCounts() {
+function getCourseId(item) {
+  const link = String(item["课程链接"] || "").trim();
+  if (link) return link;
+  return String(item["课程名称"] || "").trim();
+}
+
+async function loadViewsFromSupabase() {
   try {
-    const res = await fetch(VIEW_API + "?api=views", { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    const data = JSON.parse(text);
-    console.log("[浏览量] 远程读取成功:", JSON.stringify(data).slice(0, 80));
-    return data;
+    const { data, error } = await supabaseClient
+      .from("course_views")
+      .select("course_id, views");
+    if (error) throw error;
+    viewsMap = {};
+    (data || []).forEach((row) => {
+      viewsMap[row.course_id] = row.views;
+    });
+    console.log("[浏览量] Supabase 加载成功:", Object.keys(viewsMap).length, "门课程");
   } catch (e) {
-    console.warn("[浏览量] 远程读取失败:", e.message);
-    return null;
+    console.warn("[浏览量] Supabase 加载失败:", e.message);
   }
+  renderViewCounts();
 }
 
 function renderViewCounts() {
-  const els = document.querySelectorAll("[id^='vc-']");
-  els.forEach((el) => {
-    const courseId = el.id.replace("vc-", "");
-    const count = viewCounts[courseId] || 0;
-    el.textContent = count + " 次";
+  document.querySelectorAll("[id^='vc-']").forEach((el) => {
+    const courseId = el.dataset.courseId || el.id.replace("vc-", "");
+    const count = viewsMap[courseId];
+    if (count === undefined) {
+      el.textContent = "浏览 -- 次";
+    } else {
+      el.textContent = "浏览 " + count + " 次";
+    }
   });
 }
 
-function saveLocalCounts() {
-  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ views: viewCounts }));
-}
-
-async function initViewCounts() {
-  const remote = await fetchViewCounts();
-  if (remote && Object.keys(remote).length > 0) {
-    viewCounts = remote;
-    console.log("[浏览量] 远程数据加载成功");
-  } else {
-    const local = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
-    viewCounts = local.views || local || {};
-    console.warn("[浏览量] 使用本地数据");
-  }
-  saveLocalCounts();
-  renderViewCounts();
-}
-
 async function incrementView(courseId) {
-  viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
-  saveLocalCounts();
+  // 乐观更新
+  viewsMap[courseId] = (viewsMap[courseId] || 0) + 1;
   renderViewCounts();
   try {
-    const res = await fetch(VIEW_API + "?api=add&id=" + encodeURIComponent(courseId), { cache: "no-store" });
-    const text = await res.text();
-    const result = JSON.parse(text);
-    console.log("[浏览量] 同步成功:", result);
-  } catch (e) {
-    console.warn("[浏览量] 同步失败(本地已保存):", e.message);
-  }
-}
-
-async function incrementView(courseId) {
-  console.log("[浏览量] 点击:", courseId);
-  viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
-  saveLocalCounts();
-  renderViewCounts();
-  try {
-    const res = await fetch(VIEW_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: courseId }),
+    const { data, error } = await supabaseClient.rpc("increment_course_view", {
+      p_course_id: courseId,
     });
-    const result = await res.json();
-    console.log("[浏览量] 同步成功:", result);
+    if (error) throw error;
+    if (data !== undefined && data !== null) {
+      viewsMap[courseId] = data;
+      renderViewCounts();
+    }
+    console.log("[浏览量] +1 成功:", courseId, "→", viewsMap[courseId]);
   } catch (e) {
-    console.error("[浏览量] 同步失败:", e.message);
+    console.warn("[浏览量] +1 失败:", e.message);
   }
 }
 
@@ -1919,7 +1903,7 @@ async function boot() {
     const defaultText = await loadDefaultData();
     courses = cleanRows(parseCsv(defaultText));
     renderAll("默认数据");
-    initViewCounts();
+    loadViewsFromSupabase();
   } catch (error) {
     console.error(error);
     els.emptyState.textContent = "数据加载失败，请检查 courses.csv 文件或网络连接。";
@@ -2049,10 +2033,11 @@ document.addEventListener("click", (event) => {
   const card = link.closest(".course-card");
   const container = row || card;
   if (!container) return;
-  const checkbox = container.querySelector(".select-course");
-  if (!checkbox) return;
-  console.log("[浏览量] 点击链接, courseId=", checkbox.dataset.courseId);
-  incrementView(checkbox.dataset.courseId);
+  const viewEl = container.querySelector("[data-course-id]");
+  if (!viewEl) return;
+  const courseId = viewEl.dataset.courseId;
+  if (!courseId) return;
+  incrementView(courseId);
 });
 
 boot().catch((error) => {
