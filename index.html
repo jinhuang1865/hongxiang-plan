@@ -1343,7 +1343,7 @@ tr:hover td {
     </div>
     <script>
 const CSV_RAW_URL = "./courses.csv";
-const VIEW_API = "https://rapid-grass-6211hongxiang.jinhuang1865.workers.dev/api/views";
+const VIEW_API = "https://hongxiang-plan.streamlit.app/";
 const VIEW_STORAGE_KEY = "hongxiang-views";
 const REQUIRED_COLUMNS = ["课程名称", "课程类型", "课程介绍", "课程链接", "二级部门", "授课日期"];
 const OPTIONAL_COLUMNS = ["课程属性"];
@@ -1843,29 +1843,20 @@ let viewCounts = {};
 
 async function fetchViewCounts() {
   try {
-    const res = await fetch(VIEW_API, { cache: "no-store" });
+    const res = await fetch(VIEW_API + "?api=views", { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    console.log("[浏览量] 远程读取成功:", JSON.stringify(data.views).slice(0, 80));
-    return data.views || {};
+    const text = await res.text();
+    const data = JSON.parse(text);
+    console.log("[浏览量] 远程读取成功:", JSON.stringify(data).slice(0, 80));
+    return data;
   } catch (e) {
     console.warn("[浏览量] 远程读取失败:", e.message);
     return null;
   }
 }
 
-function getLocalCounts() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
-    return raw.views || raw || {};
-  } catch (e) {
-    return {};
-  }
-}
-
 function renderViewCounts() {
   const els = document.querySelectorAll("[id^='vc-']");
-  console.log("[浏览量] 渲染 " + els.length + " 个课程视图");
   els.forEach((el) => {
     const courseId = el.id.replace("vc-", "");
     const count = viewCounts[courseId] || 0;
@@ -1878,19 +1869,31 @@ function saveLocalCounts() {
 }
 
 async function initViewCounts() {
-  console.log("[浏览量] 初始化开始...");
   const remote = await fetchViewCounts();
-  const local = getLocalCounts();
-  console.log("[浏览量] 本地数据:", JSON.stringify(local).slice(0, 80));
-  if (remote) {
-    viewCounts = { ...local, ...remote };
-    console.log("[浏览量] 合并后:", JSON.stringify(viewCounts).slice(0, 80));
+  if (remote && Object.keys(remote).length > 0) {
+    viewCounts = remote;
+    console.log("[浏览量] 远程数据加载成功");
   } else {
-    viewCounts = local;
-    console.warn("[浏览量] 使用本地数据(Worker不可达)");
+    const local = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || "{}");
+    viewCounts = local.views || local || {};
+    console.warn("[浏览量] 使用本地数据");
   }
   saveLocalCounts();
   renderViewCounts();
+}
+
+async function incrementView(courseId) {
+  viewCounts[courseId] = (viewCounts[courseId] || 0) + 1;
+  saveLocalCounts();
+  renderViewCounts();
+  try {
+    const res = await fetch(VIEW_API + "?api=add&id=" + encodeURIComponent(courseId), { cache: "no-store" });
+    const text = await res.text();
+    const result = JSON.parse(text);
+    console.log("[浏览量] 同步成功:", result);
+  } catch (e) {
+    console.warn("[浏览量] 同步失败(本地已保存):", e.message);
+  }
 }
 
 async function incrementView(courseId) {

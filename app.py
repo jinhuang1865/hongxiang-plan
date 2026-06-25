@@ -1,6 +1,7 @@
 """
 鸿享计划 - 2026年教育BG课程资源
 Streamlit 版本，带浏览量统计（服务端 JSON 文件存储）
+同时作为 GitHub Pages 前端的浏览量 API 后端
 """
 import streamlit as st
 import pandas as pd
@@ -8,6 +9,41 @@ import json
 import os
 from datetime import datetime
 from collections import Counter
+
+# ── 浏览量存储（服务端 JSON） ──────────────────────────
+VIEWS_FILE = "streamlit_views.json"
+
+def load_views():
+    if os.path.exists(VIEWS_FILE):
+        with open(VIEWS_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_views(views):
+    with open(VIEWS_FILE, "w") as f:
+        json.dump(views, f)
+
+def increment_view(course_id):
+    views = load_views()
+    views[course_id] = views.get(course_id, 0) + 1
+    save_views(views)
+
+# ── API 模式：供 GitHub Pages 前端调用 ──────────────────
+params = st.query_params
+api_action = params.get("api", "")
+
+if api_action == "views":
+    st.text(json.dumps(load_views(), ensure_ascii=False))
+    st.stop()
+
+if api_action == "add":
+    cid = params.get("id", "")
+    if cid:
+        increment_view(cid)
+        st.text(json.dumps({"success": True, "id": cid, "count": load_views().get(cid, 0)}, ensure_ascii=False))
+    else:
+        st.text(json.dumps({"error": "Missing id"}))
+    st.stop()
 
 # ── 页面配置 ──────────────────────────────────────────
 st.set_page_config(
@@ -44,27 +80,6 @@ def load_courses():
     return df
 
 courses = load_courses()
-
-# ── 浏览量存储（服务端 JSON） ──────────────────────────
-VIEWS_FILE = "streamlit_views.json"
-
-def load_views():
-    if os.path.exists(VIEWS_FILE):
-        with open(VIEWS_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-def save_views(views):
-    with open(VIEWS_FILE, "w") as f:
-        json.dump(views, f)
-
-def increment_view(course_id):
-    views = load_views()
-    views[course_id] = views.get(course_id, 0) + 1
-    save_views(views)
-
-def get_view_count(course_id):
-    return load_views().get(course_id, 0)
 
 # ── 数据预处理 ──────────────────────────────────────────
 courses["年份月份"] = courses["授课日期"].dt.strftime("%Y-%m")
