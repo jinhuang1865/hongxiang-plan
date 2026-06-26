@@ -897,6 +897,29 @@ tr:hover td {
   margin: 0;
   color: var(--muted);
   line-height: 1.55;
+  position: relative;
+}
+
+.course-desc.truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.desc-expand {
+  display: inline;
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  margin-left: 2px;
+}
+
+.desc-expand:hover {
+  text-decoration: underline;
 }
 
 .tag {
@@ -1270,7 +1293,7 @@ tr:hover td {
 
           <article class="action-card share-builder resource-share-builder">
             <div class="section-title">
-              <span>已选学习推荐</span>
+              <span>一键转发已选课程</span>
               <small id="selectedCount">已选 0 门</small>
             </div>
             <p class="builder-hint" id="shareHint">勾选课程后，可一键生成适合转发的学习推荐。</p>
@@ -1590,30 +1613,18 @@ function renderThanks(latestDate) {
 
 function renderActionPanel(latestMonth) {
   const monthlyItems = courses.filter((item) => item.month === latestMonth).sort((a, b) => (b.date || 0) - (a.date || 0));
-  const recommended = pickRecommendedCourses(monthlyItems.length ? monthlyItems : courses);
-  els.actionMonth.textContent = latestMonth && latestMonth !== "--" ? `${latestMonth} 推荐` : "课程推荐";
+  const recommended = pickRecommendedCourses();
+  els.actionMonth.textContent = "精品推荐";
   els.newCourseCount.textContent = `${monthlyItems.length} 门`;
   els.newCourseList.innerHTML = renderMiniList(monthlyItems.slice(0, 5), "暂无本月新增课程。");
   els.recommendList.innerHTML = renderMiniList(recommended, "暂无可推荐课程。");
 }
 
-function pickRecommendedCourses(items) {
-  const priority = ["AI应用类", "产品类", "教育素养类", "研发技术类"];
-  const picked = [];
-  for (const item of items.filter((course) => course.isFeatured)) {
-    if (!picked.includes(item)) picked.push(item);
-    if (picked.length >= 5) break;
-  }
-  for (const type of priority) {
-    const match = items.find((item) => item["课程类型"] === type && !picked.includes(item));
-    if (match) picked.push(match);
-    if (picked.length >= 5) break;
-  }
-  for (const item of items) {
-    if (!picked.includes(item)) picked.push(item);
-    if (picked.length >= 5) break;
-  }
-  return picked;
+function pickRecommendedCourses() {
+  return courses
+    .filter((c) => c.isFeatured)
+    .sort((a, b) => (b.date || 0) - (a.date || 0))
+    .slice(0, 4);
 }
 
 function renderMiniList(items, emptyText) {
@@ -1710,9 +1721,7 @@ function renderCourses() {
               <a href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">${escapeHtml(item["课程名称"])}</a>
               ${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}
             </p>
-            <p class="course-desc">${escapeHtml(item["课程介绍"])}</p>
-          </td>
-          <td><span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span></td>
+            <p class="course-desc truncated"><span class="desc-text">${escapeHtml(item["课程介绍"])}</span><span class="desc-expand">展开</span></p>
           <td>${escapeHtml(item["二级部门"] || "未标注")}</td>
           <td>${formatDate(item.date)}</td>
           <td><span class="view-count" id="vc-${escapeHtml(item.id)}" data-course-id="${escapeHtml(getCourseId(item))}">浏览 -- 次</span></td>
@@ -1741,7 +1750,7 @@ function renderCourses() {
           <p class="course-title">
             <a href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">${escapeHtml(item["课程名称"])}</a>
           </p>
-          <p class="course-desc">${escapeHtml(item["课程介绍"])}</p>
+          <p class="course-desc truncated"><span class="desc-text">${escapeHtml(item["课程介绍"])}</span><span class="desc-expand">展开</span></p>
           <div class="course-card-meta">
             <span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span>
             <span>${escapeHtml(item["二级部门"] || "未标注")}</span>
@@ -2038,6 +2047,16 @@ document.addEventListener("click", (event) => {
   const courseId = viewEl.dataset.courseId;
   if (!courseId) return;
   incrementView(courseId);
+});
+
+// 课程描述 展开/收起
+document.addEventListener("click", (event) => {
+  const btn = event.target.closest(".desc-expand");
+  if (!btn) return;
+  const desc = btn.closest(".course-desc");
+  if (!desc) return;
+  const isTruncated = desc.classList.toggle("truncated");
+  btn.textContent = isTruncated ? "展开" : "收起";
 });
 
 boot().catch((error) => {
