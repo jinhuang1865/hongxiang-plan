@@ -908,14 +908,14 @@ tr:hover td {
 }
 
 .desc-expand {
-  display: inline;
+  display: inline-block;
   color: var(--brand);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  margin-left: 2px;
+  margin-top: 2px;
 }
 
 .desc-expand:hover {
@@ -1721,8 +1721,10 @@ function renderCourses() {
               <a href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">${escapeHtml(item["课程名称"])}</a>
               ${item.isFeatured ? '<span class="featured-badge">精品课程</span>' : ""}
             </p>
-            <p class="course-desc truncated"><span class="desc-text">${escapeHtml(item["课程介绍"])}</span><span class="desc-expand">展开</span></p>
-          <td>${escapeHtml(item["二级部门"] || "未标注")}</td>
+            <p class="course-desc truncated">${escapeHtml(item["课程介绍"])}</p>
+            <span class="desc-expand">展开</span>
+          </td>
+          <td><span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span></td>
           <td>${formatDate(item.date)}</td>
           <td><span class="view-count" id="vc-${escapeHtml(item.id)}" data-course-id="${escapeHtml(getCourseId(item))}">浏览 -- 次</span></td>
           <td>
@@ -1750,7 +1752,8 @@ function renderCourses() {
           <p class="course-title">
             <a href="${escapeAttribute(item["课程链接"])}" target="_blank" rel="noopener">${escapeHtml(item["课程名称"])}</a>
           </p>
-          <p class="course-desc truncated"><span class="desc-text">${escapeHtml(item["课程介绍"])}</span><span class="desc-expand">展开</span></p>
+          <p class="course-desc truncated">${escapeHtml(item["课程介绍"])}</p>
+          <span class="desc-expand">展开</span>
           <div class="course-card-meta">
             <span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span>
             <span>${escapeHtml(item["二级部门"] || "未标注")}</span>
@@ -2053,8 +2056,8 @@ document.addEventListener("click", (event) => {
 document.addEventListener("click", (event) => {
   const btn = event.target.closest(".desc-expand");
   if (!btn) return;
-  const desc = btn.closest(".course-desc");
-  if (!desc) return;
+  const desc = btn.previousElementSibling;
+  if (!desc || !desc.classList.contains("course-desc")) return;
   const isTruncated = desc.classList.toggle("truncated");
   btn.textContent = isTruncated ? "展开" : "收起";
 });
