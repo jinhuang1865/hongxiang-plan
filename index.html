@@ -1725,6 +1725,7 @@ function renderCourses() {
             <span class="desc-expand">展开</span>
           </td>
           <td><span class="tag">${escapeHtml(item["课程类型"] || "未标注")}</span></td>
+          <td>${escapeHtml(item["二级部门"] || "未标注")}</td>
           <td>${formatDate(item.date)}</td>
           <td><span class="view-count" id="vc-${escapeHtml(item.id)}" data-course-id="${escapeHtml(getCourseId(item))}">浏览 -- 次</span></td>
           <td>
