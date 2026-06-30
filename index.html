@@ -1287,6 +1287,7 @@ tr:hover td {
                 <option value="date-desc">最新优先</option>
                 <option value="date-asc">最早优先</option>
                 <option value="name-asc">名称 A-Z</option>
+                <option value="views-desc">按浏览量</option>
               </select>
             </label>
           </div>
@@ -1621,9 +1622,22 @@ function renderActionPanel(latestMonth) {
 }
 
 function pickRecommendedCourses() {
-  return courses
-    .filter((c) => c.isFeatured)
-    .sort((a, b) => (b.date || 0) - (a.date || 0))
+  const now = new Date();
+  const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate());
+  const recentFeatured = courses.filter((c) => {
+    if (!c.isFeatured) return false;
+    if (!c.date) return false;
+    return c.date.getTime() >= twoMonthsAgo.getTime();
+  });
+  // If fewer than 4 recent featured courses, fallback to all featured sorted by date
+  const pool = recentFeatured.length >= 4 ? recentFeatured : courses.filter((c) => c.isFeatured);
+  return pool
+    .sort((a, b) => {
+      const va = viewsMap[getCourseId(a)] || 0;
+      const vb = viewsMap[getCourseId(b)] || 0;
+      if (va !== vb) return vb - va;
+      return (b.date || 0) - (a.date || 0);
+    })
     .slice(0, 4);
 }
 
@@ -1696,6 +1710,7 @@ function renderCourses() {
   filtered = filtered.sort((a, b) => {
     if (sort === "date-asc") return (a.date || 0) - (b.date || 0);
     if (sort === "name-asc") return a["课程名称"].localeCompare(b["课程名称"], "zh-Hans-CN");
+    if (sort === "views-desc") return (viewsMap[getCourseId(b)] || 0) - (viewsMap[getCourseId(a)] || 0);
     return (b.date || 0) - (a.date || 0);
   });
 
@@ -1915,8 +1930,8 @@ async function boot() {
   try {
     const defaultText = await loadDefaultData();
     courses = cleanRows(parseCsv(defaultText));
+    await loadViewsFromSupabase();
     renderAll("默认数据");
-    loadViewsFromSupabase();
   } catch (error) {
     console.error(error);
     els.emptyState.textContent = "数据加载失败，请检查 courses.csv 文件或网络连接。";
