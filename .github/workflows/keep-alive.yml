@@ -1,0 +1,20 @@
+name: Keep Supabase Awake
+
+# 自动保活: 防止 Supabase 免费项目因 7 天不活跃被自动暂停
+# 每天北京时间 08:00 (UTC 00:00) 调用一次 REST API 读取浏览量表
+# 读取请求会触发数据库连接, 重置"不活跃"计时器, 不会污染浏览量数据
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch: # 允许在 Actions 页面手动触发测试
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          curl -s -o /dev/null -w "Supabase HTTP:%{http_code}\n" \
+            "https://lwadtuhvpnnjxrpgyylf.supabase.co/rest/v1/course_views?select=count&limit=1" \
+            -H "apikey: sb_publishable_6FBUVci7Hb6hjl16vR5gkw_29LkU1-w" \
+            -H "Authorization: Bearer sb_publishable_6FBUVci7Hb6hjl16vR5gkw_29LkU1-w"
