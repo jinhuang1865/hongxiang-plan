@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>鸿李计划 · 认证讲师名录</title>
+    <style>
+:root {
+  --bg: #f7f4f0;
+  --surface: #ffffff;
+  --surface-2: #ece7e0;
+  --text: #1a2332;
+  --muted: #6b7d95;
+  --line: #d5dde5;
+  --brand: #c05a2e;
+  --brand-light: #fdeee3;
+  --brand-dark: #7c3a1a;
+  --accent: #1a6b63;
+  --accent-light: #e8f5f2;
+  --blue: #2f6fbb;
+  --purple: #7a4fbf;
+  --star: #e8a82e;
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow: 0 4px 16px rgba(16, 24, 40, 0.06), 0 2px 6px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.08), 0 4px 10px rgba(16, 24, 40, 0.04);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --transition: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--bg);
+  font-family: "Microsoft YaHei", "PingFang SC", -apple-system, "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), opacity var(--transition);
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr);
+  transition: grid-template-columns 0.3s ease;
+}
+
+.app.collapsed {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 32px 24px;
+  color: #faf4ef;
+  background: linear-gradient(180deg, #3a2417 0%, #52311f 40%, #2c1a11 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  transition: padding 0.3s ease, gap 0.3s ease;
+}
+
+.app.collapsed .sidebar {
+  padding: 24px 12px;
+  gap: 16px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), right 0.3s ease;
+  z-index: 1;
+}
+
+.sidebar-toggle:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.app.collapsed .sidebar-toggle {
+  right: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #e8a82e 0%, #d4892a 100%);
+  color: #3a2417;
+  font-size: 24px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(232, 168, 46, 0.25);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.brand-text {
+  transition: opacity 0.2s ease, max-width 0.2s ease;
+}
+
+.app.collapsed .brand-text {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.brand p {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.nav {
+  display: grid;
+  gap: 4px;
+}
+
+.nav a {
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.nav-label {
+  transition: opacity 0.15s ease;
+}
+
+.app.collapsed .nav-label {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav a.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+}
+
+.nav a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.main {
+  min-width: 0;
+  padding: 36px clamp(24px, 4vw, 52px) 60px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.hero h2 {
+  max-width: 780px;
+  margin: 0 0 16px;
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  background: var(--brand);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+
+.hero-cta:hover {
+  background: var(--brand-dark);
+}
+
+.hero-pill {
+  flex: 0 0 auto;
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--brand-dark);
+  background: var(--brand-light);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.metrics article,
+.lecturer-section {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.metrics article {
+  padding: 20px 22px;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.metrics article:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.metrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.metrics strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--brand-dark);
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.lecturer-section {
+  margin-top: 14px;
+  padding: 24px 22px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.section-head h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.result-count {
+  flex: 0 0 auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.3fr) repeat(2, minmax(140px, 0.6fr));
+  gap: 12px;
+  padding: 14px 0 20px;
+}
+
+.toolbar label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.toolbar input,
+.toolbar select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--surface);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(192, 90, 46, 0.1);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.lecturer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.lecturer-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  box-shadow: 0 4px 10px rgba(192, 90, 46, 0.2);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-id h4 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.role-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tag-讲师 {
+  color: var(--brand-dark);
+  background: var(--brand-light);
+}
+
+.tag-开发 {
+  color: #1d4f8f;
+  background: #e7effa;
+}
+
+.tag-萃取 {
+  color: #5c3a91;
+  background: #efe7f9;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card-meta .dept-icon {
+  flex-shrink: 0;
+}
+
+.stars {
+  color: var(--star);
+  letter-spacing: 1px;
+  font-size: 15px;
+}
+
+.stars .empty {
+  color: #d8dde4;
+}
+
+.score {
+  color: var(--brand-dark);
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.score small {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.card-block {
+  border-top: 1px dashed var(--line);
+  padding-top: 12px;
+}
+
+.card-block-title {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.course-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.course-list a {
+  color: var(--text);
+  text-decoration: none;
+  flex: 1 1 auto;
+  transition: color var(--transition);
+}
+
+.course-list a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.course-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+.course-dot.offline {
+  background: var(--muted);
+}
+
+.badge {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.badge-online {
+  color: #0f6b63;
+  background: var(--accent-light);
+}
+
+.badge-offline {
+  color: var(--muted);
+  background: var(--surface-2);
+}
+
+.comment {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-light);
+  color: #6b4a2f;
+  font-size: 13px;
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.no-comment {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.empty {
+  display: none;
+  padding: 48px 20px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+}
+
+.empty.visible {
+  display: block;
+}
+
+@media (max-width: 1040px) {
+  .sidebar-toggle { display: none; }
+  .app.collapsed { grid-template-columns: 1fr; }
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .toolbar .search { grid-column: 1 / -1; }
+}
+
+@media (max-width: 680px) {
+  .main { padding: 20px 14px 36px; }
+  .hero, .section-head { flex-direction: column; align-items: flex-start; }
+  .metrics, .card-grid, .toolbar { grid-template-columns: 1fr; }
+}
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle" title="收起菜单" aria-label="收起菜单">◀</button>
+        <div class="brand">
+          <div class="brand-mark">李</div>
+          <div class="brand-text">
+            <h1>鸿李计划</h1>
+            <p>认证讲师名录</p>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="页面导航">
+          <a href="#overview" class="active"><span class="nav-icon">📊</span><span class="nav-label">总览</span></a>
+          <a href="#lecturers"><span class="nav-icon">👥</span><span class="nav-label">讲师名录</span></a>
+          <a href="./index.html"><span class="nav-icon">📚</span><span class="nav-label">返回鸿享</span></a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="hero" id="overview">
+          <div>
+            <p class="eyebrow">Internal Trainer Directory</p>
+            <h2>把认证讲师，沉淀成可检索、可被看见、可被选择邀请的人才名片。</h2>
+            <a class="hero-cta" href="#lecturers">认识讲师</a>
+          </div>
+          <div class="hero-pill" id="heroCount">认证讲师 -- 位</div>
+        </header>
+
+        <section class="metrics" aria-label="核心指标">
+          <article>
+            <span>认证讲师</span>
+            <strong id="mTotal">0</strong>
+          </article>
+          <article>
+            <span>内部讲师</span>
+            <strong id="mTeacher">0</strong>
+          </article>
+          <article>
+            <span>课程开发师</span>
+            <strong id="mDeveloper">0</strong>
+          </article>
+          <article>
+            <span>经验萃取师</span>
+            <strong id="mExtractor">0</strong>
+          </article>
+        </section>
+
+        <section class="lecturer-section" id="lecturers">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Lecturer Finder</p>
+              <h3>讲师名录</h3>
+            </div>
+            <div class="result-count" id="resultCount">0 位</div>
+          </div>
+
+          <div class="toolbar">
+            <label class="search">搜索讲师 / 课程
+              <input id="searchInput" type="text" placeholder="输入姓名或课程关键词" />
+            </label>
+            <label>认证角色
+              <select id="roleFilter">
+                <option value="">全部角色</option>
+                <option value="内部讲师">内部讲师</option>
+                <option value="课程开发师">课程开发师</option>
+                <option value="经验萃取师">经验萃取师</option>
+              </select>
+            </label>
+            <label>所属部门
+              <select id="deptFilter">
+                <option value="">全部部门</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="card-grid" id="cardGrid"></div>
+          <div class="empty" id="emptyState">未找到匹配的讲师。</div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const LECTURERS_URL = "./lecturers.csv";
+      const COURSES_URL = "./courses.csv";
+
+      let lecturers = [];
+      let courses = [];
+      let filtered = [];
+
+      function parseCsv(text) {
+        const rows = [];
+        let row = [];
+        let value = "";
+        let quoted = false;
+        for (let i = 0; i < text.length; i += 1) {
+          const char = text[i];
+          const next = text[i + 1];
+          if (quoted) {
+            if (char === '"' && next === '"') { value += '"'; i += 1; }
+            else if (char === '"') { quoted = false; }
+            else { value += char; }
+          } else if (char === '"') {
+            quoted = true;
+          } else if (char === ",") {
+            row.push(value); value = "";
+          } else if (char === "\n") {
+            row.push(value); rows.push(row); row = []; value = "";
+          } else if (char !== "\r") {
+            value += char;
+          }
+        }
+        row.push(value);
+        rows.push(row);
+        const headers = rows.shift().map((item) => item.trim().replace(/^\uFEFF/, ""));
+        return rows.map((cells) => {
+          const item = {};
+          headers.forEach((header, index) => { item[header] = (cells[index] || "").trim(); });
+          return item;
+        });
+      }
+
+      function splitList(value) {
+        return String(value || "").split(/[、,，;；]/).map((s) => s.trim()).filter(Boolean);
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function escapeAttribute(value) {
+        return escapeHtml(value);
+      }
+
+      function normalizeLecturer(row) {
+        const roles = splitList(row["认证角色"]);
+        return {
+          姓名: (row["姓名"] || "").trim(),
+          认证角色: (row["认证角色"] || "").trim(),
+          所属部门: (row["所属部门"] || "").trim(),
+          头像: (row["头像"] || "").trim(),
+          评分: (row["授课反馈评分"] || "").trim(),
+          评语: (row["授课反馈评语"] || "").trim(),
+          roles,
+          offlineCourses: splitList(row["线下课程"]),
+          onlineCourses: [],
+        };
+      }
+
+      function aggregate() {
+        lecturers.forEach((lec) => {
+          lec.onlineCourses = courses.filter((c) => {
+            const teachers = splitList(c["授课讲师"]);
+            return teachers.includes(lec.姓名);
+          });
+        });
+      }
+
+      function roleClass(role) {
+        if (role === "课程开发师") return "tag-开发";
+        if (role === "经验萃取师") return "tag-萃取";
+        return "tag-讲师";
+      }
+
+      function renderStars(score) {
+        const s = Math.round(Number(score) || 0);
+        const full = "★".repeat(s);
+        const empty = "☆".repeat(5 - s);
+        return `<span class="stars">${full}<span class="empty">${empty}</span></span>`;
+      }
+
+      function renderAvatar(lec) {
+        const file = lec.头像;
+        if (file) {
+          return `<img src="avatars/${escapeAttribute(file)}" alt="${escapeHtml(lec.姓名)}" onerror="this.parentNode.textContent='${escapeHtml(lec.姓名.slice(0, 1))}'" />`;
+        }
+        return escapeHtml(lec.姓名.slice(0, 1));
+      }
+
+      function renderCourseList(lec) {
+        const items = [];
+        lec.onlineCourses.forEach((c) => {
+          const link = (c["课程链接"] || "").trim();
+          const name = escapeHtml(c["课程名称"] || "未命名课程");
+          const anchor = link
+            ? `<a href="${escapeAttribute(link)}" target="_blank" rel="noopener">${name}</a>`
+            : `<span>${name}</span>`;
+          items.push(`<li><span class="course-dot"></span>${anchor}<span class="badge badge-online">线上</span></li>`);
+        });
+        lec.offlineCourses.forEach((name) => {
+          items.push(`<li><span class="course-dot offline"></span><span>${escapeHtml(name)}</span><span class="badge badge-offline">线下</span></li>`);
+        });
+        if (!items.length) {
+          return `<p class="no-comment">暂无授课课程记录</p>`;
+        }
+        return `<ul class="course-list">${items.join("")}</ul>`;
+      }
+
+      function renderCard(lec) {
+        const rolesHtml = lec.roles
+          .map((r) => `<span class="tag ${roleClass(r)}">${escapeHtml(r)}</span>`)
+          .join("");
+        const dept = lec.所属部门 || "未标注部门";
+        const scoreHtml = lec.评分
+          ? `<span class="score">${escapeHtml(lec.评分)}<small> / 5</small></span>`
+          : `<span class="score" style="color:var(--muted)">暂无评分</span>`;
+        const commentHtml = lec.评语
+          ? `<p class="comment">“${escapeHtml(lec.评语)}”</p>`
+          : `<p class="no-comment">暂无学员评语</p>`;
+        return `
+          <article class="lecturer-card">
+            <div class="card-top">
+              <div class="avatar">${renderAvatar(lec)}</div>
+              <div class="card-id">
+                <h4>${escapeHtml(lec.姓名)}</h4>
+                <div class="role-tags">${rolesHtml || '<span class="tag tag-讲师">未认证</span>'}</div>
+              </div>
+            </div>
+            <div class="card-meta"><span class="dept-icon">🏢</span><span>${escapeHtml(dept)}</span></div>
+            <div class="card-meta">${renderStars(lec.评分)}&nbsp;${scoreHtml}</div>
+            <div class="card-block">
+              <p class="card-block-title">授课课程</p>
+              ${renderCourseList(lec)}
+            </div>
+            <div class="card-block">
+              <p class="card-block-title">学员反馈</p>
+              ${commentHtml}
+            </div>
+          </article>`;
+      }
+
+      function renderMetrics() {
+        document.getElementById("mTotal").textContent = lecturers.length;
+        document.getElementById("mTeacher").textContent = lecturers.filter((l) => l.roles.includes("内部讲师")).length;
+        document.getElementById("mDeveloper").textContent = lecturers.filter((l) => l.roles.includes("课程开发师")).length;
+        document.getElementById("mExtractor").textContent = lecturers.filter((l) => l.roles.includes("经验萃取师")).length;
+        document.getElementById("heroCount").textContent = `认证讲师 ${lecturers.length} 位`;
+      }
+
+      function populateDeptFilter() {
+        const depts = [...new Set(lecturers.map((l) => l.所属部门).filter(Boolean))].sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
+        const select = document.getElementById("deptFilter");
+        select.innerHTML = '<option value="">全部部门</option>' +
+          depts.map((d) => `<option value="${escapeAttribute(d)}">${escapeHtml(d)}</option>`).join("");
+      }
+
+      function applyFilters() {
+        const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+        const role = document.getElementById("roleFilter").value;
+        const dept = document.getElementById("deptFilter").value;
+
+        filtered = lecturers.filter((lec) => {
+          if (role && !lec.roles.includes(role)) return false;
+          if (dept && lec.所属部门 !== dept) return false;
+          if (keyword) {
+            const haystack = [
+              lec.姓名,
+              lec.所属部门,
+              lec.认证角色,
+              ...lec.roles,
+              ...lec.offlineCourses,
+              ...lec.onlineCourses.map((c) => c["课程名称"] || ""),
+            ].join(" ").toLowerCase();
+            if (!haystack.includes(keyword)) return false;
+          }
+          return true;
+        });
+
+        renderCards();
+      }
+
+      function renderCards() {
+        const grid = document.getElementById("cardGrid");
+        const empty = document.getElementById("emptyState");
+        document.getElementById("resultCount").textContent = `${filtered.length} 位`;
+        grid.innerHTML = filtered.map(renderCard).join("");
+        empty.classList.toggle("visible", filtered.length === 0);
+      }
+
+      async function loadText(url) {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error(`无法加载 ${url}`);
+        return res.text();
+      }
+
+      async function boot() {
+        try {
+          const [lecturerText, courseText] = await Promise.all([
+            loadText(LECTURERS_URL),
+            loadText(COURSES_URL),
+          ]);
+          lecturers = parseCsv(lecturerText).map(normalizeLecturer).filter((l) => l.姓名);
+          courses = parseCsv(courseText);
+          aggregate();
+          renderMetrics();
+          populateDeptFilter();
+          filtered = [...lecturers];
+          renderCards();
+        } catch (error) {
+          console.error(error);
+          const empty = document.getElementById("emptyState");
+          empty.textContent = "数据加载失败，请检查 lecturers.csv / courses.csv 文件。";
+          empty.classList.add("visible");
+        }
+      }
+
+      document.getElementById("sidebarToggle").addEventListener("click", () => {
+        document.querySelector(".app").classList.toggle("collapsed");
+      });
+
+      ["searchInput", "roleFilter", "deptFilter"].forEach((id) => {
+        document.getElementById(id).addEventListener("input", applyFilters);
+      });
+      document.getElementById("roleFilter").addEventListener("change", applyFilters);
+      document.getElementById("deptFilter").addEventListener("change", applyFilters);
+
+      boot();
+    </script>
+  </body>
+</html>
