@@ -29,13 +29,9 @@
   --transition: 0.2s ease;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -48,25 +44,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-button,
-input,
-select {
-  font: inherit;
-}
+button, input, select { font: inherit; }
 
-button,
-select {
+button, select {
   cursor: pointer;
   transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), opacity var(--transition);
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
-button:active {
-  transform: scale(0.98);
-}
+button:hover { opacity: 0.9; }
+button:active { transform: scale(0.98); }
 
 .app {
   min-height: 100vh;
@@ -75,9 +61,7 @@ button:active {
   transition: grid-template-columns 0.3s ease;
 }
 
-.app.collapsed {
-  grid-template-columns: 64px minmax(0, 1fr);
-}
+.app.collapsed { grid-template-columns: 64px minmax(0, 1fr); }
 
 .sidebar {
   position: sticky;
@@ -94,10 +78,7 @@ button:active {
   transition: padding 0.3s ease, gap 0.3s ease;
 }
 
-.app.collapsed .sidebar {
-  padding: 24px 12px;
-  gap: 16px;
-}
+.app.collapsed .sidebar { padding: 24px 12px; gap: 16px; }
 
 .sidebar-toggle {
   position: absolute;
@@ -117,20 +98,10 @@ button:active {
   z-index: 1;
 }
 
-.sidebar-toggle:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.15);
-}
+.sidebar-toggle:hover { color: #fff; background: rgba(255, 255, 255, 0.15); }
+.app.collapsed .sidebar-toggle { right: 18px; }
 
-.app.collapsed .sidebar-toggle {
-  right: 18px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.brand { display: flex; align-items: center; gap: 14px; }
 
 .brand-mark {
   width: 48px;
@@ -155,26 +126,12 @@ button:active {
   transition: opacity 0.2s ease;
 }
 
-.brand-text {
-  transition: opacity 0.2s ease, max-width 0.2s ease;
-}
+.brand-text { transition: opacity 0.2s ease, max-width 0.2s ease; }
+.app.collapsed .brand-text { opacity: 0; pointer-events: none; }
 
-.app.collapsed .brand-text {
-  opacity: 0;
-  pointer-events: none;
-}
+.brand p { margin: 4px 0 0; color: rgba(255, 255, 255, 0.55); font-size: 13px; line-height: 1.6; }
 
-.brand p {
-  margin: 4px 0 0;
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.nav {
-  display: grid;
-  gap: 4px;
-}
+.nav { display: grid; gap: 4px; }
 
 .nav a {
   padding: 11px 14px;
@@ -190,36 +147,14 @@ button:active {
   white-space: nowrap;
 }
 
-.nav-icon {
-  flex-shrink: 0;
-  width: 20px;
-  text-align: center;
-}
+.nav-icon { flex-shrink: 0; width: 20px; text-align: center; }
+.nav-label { transition: opacity 0.15s ease; }
+.app.collapsed .nav-label { opacity: 0; pointer-events: none; }
 
-.nav-label {
-  transition: opacity 0.15s ease;
-}
+.nav a.active { color: #fff; background: rgba(255, 255, 255, 0.12); font-weight: 700; }
+.nav a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
 
-.app.collapsed .nav-label {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.nav a.active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.12);
-  font-weight: 700;
-}
-
-.nav a:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.main {
-  min-width: 0;
-  padding: 36px clamp(24px, 4vw, 52px) 60px;
-}
+.main { min-width: 0; padding: 36px clamp(24px, 4vw, 52px) 60px; }
 
 .hero {
   display: flex;
@@ -262,9 +197,7 @@ button:active {
   transition: background var(--transition);
 }
 
-.hero-cta:hover {
-  background: var(--brand-dark);
-}
+.hero-cta:hover { background: var(--brand-dark); }
 
 .hero-pill {
   flex: 0 0 auto;
@@ -297,17 +230,9 @@ button:active {
   transition: box-shadow var(--transition), transform var(--transition);
 }
 
-.metrics article:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
+.metrics article:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 
-.metrics span {
-  display: block;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
-}
+.metrics span { display: block; color: var(--muted); font-size: 13px; font-weight: 600; }
 
 .metrics strong {
   display: block;
@@ -319,10 +244,9 @@ button:active {
   letter-spacing: -1px;
 }
 
-.lecturer-section {
-  margin-top: 14px;
-  padding: 24px 22px;
-}
+.metrics strong small { font-size: 18px; font-weight: 700; letter-spacing: 0; color: var(--muted); }
+
+.lecturer-section { margin-top: 14px; padding: 24px 22px; }
 
 .section-head {
   display: flex;
@@ -332,12 +256,7 @@ button:active {
   margin-bottom: 6px;
 }
 
-.section-head h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-}
+.section-head h3 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.2px; }
 
 .result-count {
   flex: 0 0 auto;
@@ -356,13 +275,7 @@ button:active {
   padding: 14px 0 20px;
 }
 
-.toolbar label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-}
+.toolbar label { display: grid; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
 
 .toolbar input,
 .toolbar select {
@@ -392,24 +305,20 @@ button:active {
 .lecturer-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  transition: box-shadow var(--transition), transform var(--transition);
+  transition: box-shadow var(--transition), transform var(--transition), opacity var(--transition);
 }
 
-.lecturer-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
+.lecturer-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 
-.card-top {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.lecturer-card.no-course { opacity: 0.6; }
+.lecturer-card.no-course:hover { opacity: 0.85; }
+
+.card-top { display: flex; align-items: center; gap: 14px; }
 
 .avatar {
   flex: 0 0 auto;
@@ -426,23 +335,11 @@ button:active {
   box-shadow: 0 4px 10px rgba(192, 90, 46, 0.2);
 }
 
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-.card-id h4 {
-  margin: 0 0 6px;
-  font-size: 17px;
-  font-weight: 800;
-}
+.card-id h4 { margin: 0 0 6px; font-size: 17px; font-weight: 800; }
 
-.role-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
+.role-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .tag {
   display: inline-flex;
@@ -455,59 +352,24 @@ button:active {
   white-space: nowrap;
 }
 
-.tag-讲师 {
-  color: var(--brand-dark);
-  background: var(--brand-light);
-}
+.tag-l1 { color: #8a5a00; background: #fbeed6; }
+.tag-l2 { color: var(--brand-dark); background: var(--brand-light); }
+.tag-l3 { color: #1d4f8f; background: #e7effa; }
+.tag-l4 { color: #0f6b63; background: var(--accent-light); }
+.tag-l5 { color: #4a5a72; background: #edf0f5; }
 
-.tag-开发 {
-  color: #1d4f8f;
-  background: #e7effa;
-}
+.card-meta { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+.card-meta .dept-icon { flex-shrink: 0; }
 
-.tag-萃取 {
-  color: #5c3a91;
-  background: #efe7f9;
-}
+.stars { color: var(--star); letter-spacing: 1px; font-size: 15px; }
+.stars .empty { color: #d8dde4; }
 
-.card-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 13px;
-}
+.score { color: var(--brand-dark); font-weight: 800; font-size: 15px; }
+.score small { color: var(--muted); font-weight: 600; font-size: 12px; }
 
-.card-meta .dept-icon {
-  flex-shrink: 0;
-}
+.course-count { color: var(--muted); font-weight: 700; font-size: 12px; }
 
-.stars {
-  color: var(--star);
-  letter-spacing: 1px;
-  font-size: 15px;
-}
-
-.stars .empty {
-  color: #d8dde4;
-}
-
-.score {
-  color: var(--brand-dark);
-  font-weight: 800;
-  font-size: 15px;
-}
-
-.score small {
-  color: var(--muted);
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.card-block {
-  border-top: 1px dashed var(--line);
-  padding-top: 12px;
-}
+.card-block { border-top: 1px dashed var(--line); padding-top: 12px; }
 
 .card-block-title {
   margin: 0 0 8px;
@@ -515,96 +377,29 @@ button:active {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
-}
-
-.course-list {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.course-list li {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 13.5px;
-  line-height: 1.5;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.course-list a {
-  color: var(--text);
-  text-decoration: none;
-  flex: 1 1 auto;
-  transition: color var(--transition);
-}
+.course-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
 
-.course-list a:hover {
-  color: var(--brand);
-  text-decoration: underline;
-}
+.course-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; line-height: 1.5; }
 
-.course-dot {
-  flex: 0 0 auto;
-  width: 6px;
-  height: 6px;
-  margin-top: 8px;
-  border-radius: 50%;
-  background: var(--brand);
-}
+.course-list a { color: var(--text); text-decoration: none; flex: 1 1 auto; transition: color var(--transition); }
+.course-list a:hover { color: var(--brand); text-decoration: underline; }
 
-.course-dot.offline {
-  background: var(--muted);
-}
+.course-dot { flex: 0 0 auto; width: 6px; height: 6px; margin-top: 8px; border-radius: 50%; background: var(--brand); }
+.course-dot.offline { background: var(--muted); }
 
-.badge {
-  flex: 0 0 auto;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 700;
-  line-height: 1.6;
-}
+.badge { flex: 0 0 auto; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 700; line-height: 1.6; }
+.badge-online { color: #0f6b63; background: var(--accent-light); }
+.badge-offline { color: var(--muted); background: var(--surface-2); }
 
-.badge-online {
-  color: #0f6b63;
-  background: var(--accent-light);
-}
+.no-comment { margin: 0; color: var(--muted); font-size: 13px; }
 
-.badge-offline {
-  color: var(--muted);
-  background: var(--surface-2);
-}
-
-.comment {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: var(--brand-light);
-  color: #6b4a2f;
-  font-size: 13px;
-  line-height: 1.55;
-  font-style: italic;
-}
-
-.no-comment {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.empty {
-  display: none;
-  padding: 48px 20px;
-  color: var(--muted);
-  text-align: center;
-  font-size: 14px;
-}
-
-.empty.visible {
-  display: block;
-}
+.empty { display: none; padding: 48px 20px; color: var(--muted); text-align: center; font-size: 14px; }
+.empty.visible { display: block; }
 
 @media (max-width: 1040px) {
   .sidebar-toggle { display: none; }
@@ -654,22 +449,10 @@ button:active {
         </header>
 
         <section class="metrics" aria-label="核心指标">
-          <article>
-            <span>认证讲师</span>
-            <strong id="mTotal">0</strong>
-          </article>
-          <article>
-            <span>内部讲师</span>
-            <strong id="mTeacher">0</strong>
-          </article>
-          <article>
-            <span>课程开发师</span>
-            <strong id="mDeveloper">0</strong>
-          </article>
-          <article>
-            <span>经验萃取师</span>
-            <strong id="mExtractor">0</strong>
-          </article>
+          <article><span>认证讲师</span><strong id="mTotal">0</strong></article>
+          <article><span>有授课记录</span><strong id="mActive">0</strong></article>
+          <article><span>授课课程（去重）</span><strong id="mCourses">0<small> 门</small></strong></article>
+          <article><span>平均满意度</span><strong id="mAvg">0<small> 分</small></strong></article>
         </section>
 
         <section class="lecturer-section" id="lecturers">
@@ -685,12 +468,14 @@ button:active {
             <label class="search">搜索讲师 / 课程
               <input id="searchInput" type="text" placeholder="输入姓名或课程关键词" />
             </label>
-            <label>认证角色
-              <select id="roleFilter">
-                <option value="">全部角色</option>
-                <option value="内部讲师">内部讲师</option>
-                <option value="课程开发师">课程开发师</option>
-                <option value="经验萃取师">经验萃取师</option>
+            <label>讲师级别
+              <select id="levelFilter">
+                <option value="">全部级别</option>
+                <option value="一级内训师">一级内训师</option>
+                <option value="二级内训师">二级内训师</option>
+                <option value="三级内训师">三级内训师</option>
+                <option value="四级内训师">四级内训师</option>
+                <option value="五级内训师">五级内训师</option>
               </select>
             </label>
             <label>所属部门
@@ -712,6 +497,7 @@ button:active {
 
       let lecturers = [];
       let courses = [];
+      let courseMap = {};
       let filtered = [];
 
       function parseCsv(text) {
@@ -746,8 +532,8 @@ button:active {
         });
       }
 
-      function splitList(value) {
-        return String(value || "").split(/[、,，;；]/).map((s) => s.trim()).filter(Boolean);
+      function splitPipe(value) {
+        return String(value || "").split("|").map((s) => s.trim()).filter(Boolean);
       }
 
       function escapeHtml(value) {
@@ -759,112 +545,105 @@ button:active {
           .replaceAll("'", "&#039;");
       }
 
-      function escapeAttribute(value) {
-        return escapeHtml(value);
-      }
+      function escapeAttribute(value) { return escapeHtml(value); }
 
       function normalizeLecturer(row) {
-        const roles = splitList(row["认证角色"]);
         return {
           姓名: (row["姓名"] || "").trim(),
-          认证角色: (row["认证角色"] || "").trim(),
           所属部门: (row["所属部门"] || "").trim(),
-          头像: (row["头像"] || "").trim(),
+          讲师级别: (row["讲师级别"] || "").trim(),
           评分: (row["授课反馈评分"] || "").trim(),
-          评语: (row["授课反馈评语"] || "").trim(),
-          roles,
-          offlineCourses: splitList(row["线下课程"]),
-          onlineCourses: [],
+          课程数: parseInt(row["授课课程数"] || "0", 10) || 0,
+          onlineCourses: splitPipe(row["线上课程"]),
+          offlineCourses: splitPipe(row["线下课程"]),
         };
       }
 
-      function aggregate() {
-        lecturers.forEach((lec) => {
-          lec.onlineCourses = courses.filter((c) => {
-            const teachers = splitList(c["授课讲师"]);
-            return teachers.includes(lec.姓名);
-          });
+      function buildCourseMap() {
+        courseMap = {};
+        courses.forEach((c) => {
+          courseMap[(c["课程名称"] || "").trim()] = (c["课程链接"] || "").trim();
         });
       }
 
-      function roleClass(role) {
-        if (role === "课程开发师") return "tag-开发";
-        if (role === "经验萃取师") return "tag-萃取";
-        return "tag-讲师";
+      function levelClass(level) {
+        if (level.includes("一级")) return "tag-l1";
+        if (level.includes("二级")) return "tag-l2";
+        if (level.includes("三级")) return "tag-l3";
+        if (level.includes("四级")) return "tag-l4";
+        return "tag-l5";
       }
 
       function renderStars(score) {
         const s = Math.round(Number(score) || 0);
         const full = "★".repeat(s);
-        const empty = "☆".repeat(5 - s);
+        const empty = "☆".repeat(Math.max(0, 5 - s));
         return `<span class="stars">${full}<span class="empty">${empty}</span></span>`;
       }
 
       function renderAvatar(lec) {
-        const file = lec.头像;
-        if (file) {
-          return `<img src="avatars/${escapeAttribute(file)}" alt="${escapeHtml(lec.姓名)}" onerror="this.parentNode.textContent='${escapeHtml(lec.姓名.slice(0, 1))}'" />`;
-        }
-        return escapeHtml(lec.姓名.slice(0, 1));
+        return escapeHtml((lec.姓名 || "").slice(0, 1));
       }
 
       function renderCourseList(lec) {
         const items = [];
-        lec.onlineCourses.forEach((c) => {
-          const link = (c["课程链接"] || "").trim();
-          const name = escapeHtml(c["课程名称"] || "未命名课程");
+        lec.onlineCourses.forEach((name) => {
+          const link = courseMap[name] || "";
           const anchor = link
-            ? `<a href="${escapeAttribute(link)}" target="_blank" rel="noopener">${name}</a>`
-            : `<span>${name}</span>`;
+            ? `<a href="${escapeAttribute(link)}" target="_blank" rel="noopener">${escapeHtml(name)}</a>`
+            : `<span>${escapeHtml(name)}</span>`;
           items.push(`<li><span class="course-dot"></span>${anchor}<span class="badge badge-online">线上</span></li>`);
         });
         lec.offlineCourses.forEach((name) => {
           items.push(`<li><span class="course-dot offline"></span><span>${escapeHtml(name)}</span><span class="badge badge-offline">线下</span></li>`);
         });
-        if (!items.length) {
-          return `<p class="no-comment">暂无授课课程记录</p>`;
-        }
+        if (!items.length) return `<p class="no-comment">暂无授课记录</p>`;
         return `<ul class="course-list">${items.join("")}</ul>`;
       }
 
       function renderCard(lec) {
-        const rolesHtml = lec.roles
-          .map((r) => `<span class="tag ${roleClass(r)}">${escapeHtml(r)}</span>`)
-          .join("");
+        const hasCourse = lec.课程数 > 0;
+        const levelTag = lec.讲师级别
+          ? `<span class="tag ${levelClass(lec.讲师级别)}">${escapeHtml(lec.讲师级别)}</span>`
+          : `<span class="tag tag-l5">未认证</span>`;
         const dept = lec.所属部门 || "未标注部门";
         const scoreHtml = lec.评分
           ? `<span class="score">${escapeHtml(lec.评分)}<small> / 5</small></span>`
           : `<span class="score" style="color:var(--muted)">暂无评分</span>`;
-        const commentHtml = lec.评语
-          ? `<p class="comment">“${escapeHtml(lec.评语)}”</p>`
-          : `<p class="no-comment">暂无学员评语</p>`;
+        const countHtml = `<span class="course-count">授课 ${lec.课程数} 门</span>`;
         return `
-          <article class="lecturer-card">
+          <article class="lecturer-card${hasCourse ? "" : " no-course"}">
             <div class="card-top">
               <div class="avatar">${renderAvatar(lec)}</div>
               <div class="card-id">
                 <h4>${escapeHtml(lec.姓名)}</h4>
-                <div class="role-tags">${rolesHtml || '<span class="tag tag-讲师">未认证</span>'}</div>
+                <div class="role-tags">${levelTag}</div>
               </div>
             </div>
             <div class="card-meta"><span class="dept-icon">🏢</span><span>${escapeHtml(dept)}</span></div>
             <div class="card-meta">${renderStars(lec.评分)}&nbsp;${scoreHtml}</div>
             <div class="card-block">
-              <p class="card-block-title">授课课程</p>
+              <p class="card-block-title"><span>授课课程</span>${countHtml}</p>
               ${renderCourseList(lec)}
-            </div>
-            <div class="card-block">
-              <p class="card-block-title">学员反馈</p>
-              ${commentHtml}
             </div>
           </article>`;
       }
 
       function renderMetrics() {
+        const active = lecturers.filter((l) => l.课程数 > 0);
+        const courseSet = new Set();
+        lecturers.forEach((l) => {
+          l.onlineCourses.forEach((c) => courseSet.add(c));
+          l.offlineCourses.forEach((c) => courseSet.add(c));
+        });
+        const scored = lecturers.filter((l) => l.评分);
+        const avg = scored.length
+          ? (scored.reduce((s, l) => s + Number(l.评分), 0) / scored.length).toFixed(2)
+          : 0;
         document.getElementById("mTotal").textContent = lecturers.length;
-        document.getElementById("mTeacher").textContent = lecturers.filter((l) => l.roles.includes("内部讲师")).length;
-        document.getElementById("mDeveloper").textContent = lecturers.filter((l) => l.roles.includes("课程开发师")).length;
-        document.getElementById("mExtractor").textContent = lecturers.filter((l) => l.roles.includes("经验萃取师")).length;
+        document.getElementById("mActive").textContent = active.length;
+        document.getElementById("mCourses").innerHTML = `${courseSet.size}<small> 门</small>`;
+        document.getElementById("mAvg").innerHTML = `${avg}<small> 分</small>`;
         document.getElementById("heroCount").textContent = `认证讲师 ${lecturers.length} 位`;
       }
 
@@ -877,20 +656,19 @@ button:active {
 
       function applyFilters() {
         const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
-        const role = document.getElementById("roleFilter").value;
+        const level = document.getElementById("levelFilter").value;
         const dept = document.getElementById("deptFilter").value;
 
         filtered = lecturers.filter((lec) => {
-          if (role && !lec.roles.includes(role)) return false;
+          if (level && lec.讲师级别 !== level) return false;
           if (dept && lec.所属部门 !== dept) return false;
           if (keyword) {
             const haystack = [
               lec.姓名,
               lec.所属部门,
-              lec.认证角色,
-              ...lec.roles,
+              lec.讲师级别,
+              ...lec.onlineCourses,
               ...lec.offlineCourses,
-              ...lec.onlineCourses.map((c) => c["课程名称"] || ""),
             ].join(" ").toLowerCase();
             if (!haystack.includes(keyword)) return false;
           }
@@ -922,7 +700,7 @@ button:active {
           ]);
           lecturers = parseCsv(lecturerText).map(normalizeLecturer).filter((l) => l.姓名);
           courses = parseCsv(courseText);
-          aggregate();
+          buildCourseMap();
           renderMetrics();
           populateDeptFilter();
           filtered = [...lecturers];
@@ -939,10 +717,10 @@ button:active {
         document.querySelector(".app").classList.toggle("collapsed");
       });
 
-      ["searchInput", "roleFilter", "deptFilter"].forEach((id) => {
+      ["searchInput", "levelFilter", "deptFilter"].forEach((id) => {
         document.getElementById(id).addEventListener("input", applyFilters);
       });
-      document.getElementById("roleFilter").addEventListener("change", applyFilters);
+      document.getElementById("levelFilter").addEventListener("change", applyFilters);
       document.getElementById("deptFilter").addEventListener("change", applyFilters);
 
       boot();
