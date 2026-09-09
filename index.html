@@ -1185,7 +1185,7 @@ tr:hover td {
             <strong id="totalTypes">0</strong>
           </article>
           <article>
-            <span>本月新增</span>
+            <span>近期新增</span>
             <strong id="monthCourses">0</strong>
           </article>
         </section>
@@ -1211,18 +1211,18 @@ tr:hover td {
           <div class="section-head">
             <div>
               <p class="eyebrow">HRBP Toolkit</p>
-              <h3>本月推荐课程</h3>
+              <h3>近期推荐课程</h3>
             </div>
             <div class="result-count" id="actionMonth">--</div>
           </div>
           <div class="action-grid">
             <article class="action-card">
               <div class="section-title">
-                <span>本月新增</span>
+                <span>近期新增</span>
                 <small id="newCourseCount">0 门</small>
               </div>
               <div class="mini-list" id="newCourseList"></div>
-              <button class="view-all-new" id="viewAllNew" type="button">查看全部本月新增 →</button>
+              <button class="view-all-new" id="viewAllNew" type="button">查看全部近期新增 →</button>
             </article>
             <article class="action-card">
               <div class="section-title">
@@ -1552,17 +1552,26 @@ function setOptions(select, values, allLabel) {
   select.value = values.includes(current) ? current : "";
 }
 
+function getRecentCourses(days = 90) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  cutoff.setHours(0, 0, 0, 0);
+  return courses
+    .filter((item) => item.date && item.date.getTime() >= cutoff.getTime())
+    .sort((a, b) => (b.date || 0) - (a.date || 0));
+}
+
 function renderAll(sourceName = "默认数据") {
   const validDates = courses.map((item) => item.date).filter(Boolean).sort((a, b) => b - a);
   const latestDate = validDates[0] || null;
   const latestMonth = latestDate ? formatMonth(latestDate) : "--";
-  const latestMonthCourses = courses.filter((item) => item.month === latestMonth).length;
+  const recentCount = getRecentCourses(90).length;
 
-  els.latestMonth.textContent = latestMonth === "--" ? "暂无日期" : `${latestMonth} 更新`;
+  els.latestMonth.textContent = latestMonth === "--" ? "暂无日期" : `更新至 ${latestMonth}`;
   els.totalCourses.textContent = courses.length;
   els.totalDepartments.textContent = uniqueValues(courses, "二级部门").length;
   els.totalTypes.textContent = uniqueValues(courses, "课程类型").length;
-  els.monthCourses.textContent = latestMonthCourses;
+  els.monthCourses.textContent = recentCount;
 
   setOptions(els.typeFilter, uniqueValues(courses, "课程类型"), "全部类型");
   setOptions(els.deptFilter, uniqueValues(courses, "二级部门"), "全部部门");
@@ -1570,7 +1579,7 @@ function renderAll(sourceName = "默认数据") {
 
   renderChart(els.typeChart, countBy(courses, "课程类型"));
   renderChart(els.deptChart, countBy(courses, "二级部门"), 8);
-  renderActionPanel(latestMonth);
+  renderActionPanel();
   renderThanks(latestDate);
   renderSelectedList();
   renderCourses();
@@ -1612,12 +1621,12 @@ function renderThanks(latestDate) {
   els.yearlyRanking.innerHTML = renderRanking(yearlyTop);
 }
 
-function renderActionPanel(latestMonth) {
-  const monthlyItems = courses.filter((item) => item.month === latestMonth).sort((a, b) => (b.date || 0) - (a.date || 0));
+function renderActionPanel() {
+  const recentItems = getRecentCourses(90);
   const recommended = pickRecommendedCourses();
   els.actionMonth.textContent = "精品推荐";
-  els.newCourseCount.textContent = `${monthlyItems.length} 门`;
-  els.newCourseList.innerHTML = renderMiniList(monthlyItems.slice(0, 5), "暂无本月新增课程。");
+  els.newCourseCount.textContent = `${recentItems.length} 门`;
+  els.newCourseList.innerHTML = renderMiniList(recentItems.slice(0, 5), "暂无近期新增课程。");
   els.recommendList.innerHTML = renderMiniList(recommended, "暂无可推荐课程。");
 }
 
